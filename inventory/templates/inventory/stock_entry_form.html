@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">{{ title }}</h2>
+            <p class="text-muted mb-0">
+                Add stock to your inventory
+            </p>
+        </div>
+
+        <a href="{% url 'inventory:stock_entry_list' %}"
+           class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Back to Stock
+        </a>
+
+    </div>
+
+
+    <!-- STOCK ENTRY CARD -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                Stock Entry Information
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <!-- STOCK ENTRY -->
+                <h6 class="mb-3">
+                    Supplier Information
+                </h6>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Supplier
+                        </label>
+
+                        {{ stock_form.Supplier }}
+
+                        {% if stock_form.Supplier.errors %}
+                            <div class="text-danger small">
+                                {{ stock_form.Supplier.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Remarks
+                        </label>
+
+                        {{ stock_form.Remarks }}
+
+                        {% if stock_form.Remarks.errors %}
+                            <div class="text-danger small">
+                                {{ stock_form.Remarks.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!-- PRODUCT INFORMATION -->
+                <h6 class="mb-3">
+                    Product Information
+                </h6>
+
+                <div class="row">
+
+                    <!-- PRODUCT -->
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Product
+                        </label>
+
+                        {{ detail_form.Product }}
+
+                        {% if detail_form.Product.errors %}
+                            <div class="text-danger small">
+                                {{ detail_form.Product.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Quantity
+                        </label>
+
+                        {{ detail_form.Quantity }}
+
+                        {% if detail_form.Quantity.errors %}
+                            <div class="text-danger small">
+                                {{ detail_form.Quantity.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- PURCHASE PRICE -->
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Purchase Price
+                        </label>
+
+                        {{ detail_form.PurchasePrice }}
+
+                        {% if detail_form.PurchasePrice.errors %}
+                            <div class="text-danger small">
+                                {{ detail_form.PurchasePrice.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- NON FIELD ERRORS -->
+
+                {% if stock_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ stock_form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% if detail_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ detail_form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{% url 'inventory:stock_entry_list' %}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Add Stock
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

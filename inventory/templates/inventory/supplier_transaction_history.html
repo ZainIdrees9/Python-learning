@@ -1,0 +1,518 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .supplier-history-page {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .supplier-history-page h2 {
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    .supplier-history-page h5 {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .supplier-history-page p {
+        font-size: 15px;
+    }
+
+    .supplier-history-page .card {
+        border: none;
+    }
+
+    .supplier-history-page table {
+        font-size: 15px;
+    }
+
+    .supplier-history-page table th {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .supplier-history-page table td {
+        font-size: 15px;
+        vertical-align: middle;
+    }
+
+    .summary-card {
+        min-height: 130px;
+    }
+
+    @media (max-width: 992px) {
+        .supplier-history-page {
+            width: 92%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .supplier-history-page {
+            width: 95%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .supplier-history-page {
+            width: 96%;
+        }
+
+        .supplier-history-page h2 {
+            font-size: 22px;
+        }
+    }
+</style>
+
+
+<div class="supplier-history-page py-4">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+                <i class="bi bi-clock-history"></i>
+                Supplier Transaction History
+            </h2>
+
+            <p class="text-muted mb-0">
+                View all purchase transactions for this supplier.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <a
+                href="{% url 'inventory:supplier_list' %}"
+                class="btn btn-secondary"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Suppliers
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUPPLIER INFORMATION
+    ====================================================== -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="mb-3">
+                <i class="bi bi-person-vcard"></i>
+                Supplier Information
+            </h5>
+
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>
+                        Supplier Name
+                    </strong>
+
+                    <div class="mt-1">
+                        {{ supplier.Name }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>
+                        Phone
+                    </strong>
+
+                    <div class="mt-1">
+                        {{ supplier.Phone|default:"-" }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4 mb-3">
+
+                    <strong>
+                        Email
+                    </strong>
+
+                    <div class="mt-1">
+                        {{ supplier.Email|default:"-" }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if supplier.Address %}
+
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <strong>
+                            Address
+                        </strong>
+
+                        <div class="mt-1">
+                            {{ supplier.Address }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
+
+    <div class="row mb-4">
+
+        <!-- TOTAL PURCHASES -->
+
+        <div class="col-md-6 mb-3">
+
+            <div class="card shadow-sm summary-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted mb-2">
+                                Total Purchases
+                            </h6>
+
+                            <h3 class="text-primary mb-0">
+
+                                Rs.
+                                {{ total_purchases|floatformat:2 }}
+
+                            </h3>
+
+                        </div>
+
+
+                        <div>
+
+                            <i
+                                class="bi bi-cart-check fs-1 text-primary"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL ENTRIES -->
+
+        <div class="col-md-6 mb-3">
+
+            <div class="card shadow-sm summary-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted mb-2">
+                                Total Purchase Entries
+                            </h6>
+
+                            <h3 class="text-success mb-0">
+
+                                {{ stock_entries|length }}
+
+                            </h3>
+
+                        </div>
+
+
+                        <div>
+
+                            <i
+                                class="bi bi-receipt fs-1 text-success"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PURCHASE HISTORY
+    ====================================================== -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-list-ul"></i>
+                    Purchase History
+
+                </h5>
+
+
+                <span class="badge bg-secondary">
+
+                    {{ stock_entries|length }}
+                    Entries
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {% if stock_entries %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    Stock Entry
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Products
+                                </th>
+
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th class="text-end">
+                                    Purchase Cost
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for entry in stock_entries %}
+
+                                <tr>
+
+                                    <!-- NUMBER -->
+
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+
+
+                                    <!-- STOCK ENTRY -->
+
+                                    <td>
+
+                                        <strong>
+                                            Purchase #{{ entry.SE_Id }}
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+
+                                        {{ entry.EntryDate|date:"d M Y, h:i A" }}
+
+                                    </td>
+
+
+                                    <!-- PRODUCTS -->
+
+                                    <td>
+
+                                        {% for detail in entry.details.all %}
+
+                                            <div class="mb-1">
+
+                                                <span class="fw-semibold">
+
+                                                    {{ detail.Product.Name }}
+
+                                                </span>
+
+                                                <br>
+
+                                                <small class="text-muted">
+
+                                                    Purchase Price:
+                                                    Rs.
+                                                    {{ detail.PurchasePrice|floatformat:2 }}
+
+                                                </small>
+
+                                            </div>
+
+                                        {% empty %}
+
+                                            <span class="text-muted">
+                                                No products
+                                            </span>
+
+                                        {% endfor %}
+
+                                    </td>
+
+
+                                    <!-- QUANTITY -->
+
+                                    <td>
+
+                                        {% for detail in entry.details.all %}
+
+                                            <div class="mb-1">
+
+                                                <span class="badge bg-secondary">
+
+                                                    {{ detail.Quantity }}
+
+                                                </span>
+
+                                            </div>
+
+                                        {% empty %}
+
+                                            -
+                                        {% endfor %}
+
+                                    </td>
+
+
+                                    <!-- COST -->
+
+                                    <td class="text-end">
+
+                                        <strong class="text-primary">
+
+                                            Rs.
+                                            {{ entry.Cost|floatformat:2 }}
+
+                                        </strong>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            {% else %}
+
+                <!-- =================================================
+                     NO TRANSACTIONS
+                ================================================== -->
+
+                <div class="text-center py-5">
+
+                    <i
+                        class="bi bi-clock-history fs-1 text-muted"
+                    ></i>
+
+                    <h5 class="mt-3">
+                        No Transactions Found
+                    </h5>
+
+                    <p class="text-muted">
+
+                        This supplier does not have any
+                        purchase transactions yet.
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'inventory:stock_entry_create' %}"
+                        class="btn btn-primary"
+                    >
+
+                        <i class="bi bi-plus-circle"></i>
+
+                        Add Stock Entry
+
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

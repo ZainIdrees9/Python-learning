@@ -1,0 +1,735 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main page container */
+    .sales-page {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        {% comment %} padding: 20px 16px !important; {% endcomment %}
+        box-sizing: border-box;
+    }
+
+    /* Page heading */
+    .sales-page .sales-page-header {
+        gap: 12px;
+        margin-bottom: 20px !important;
+    }
+
+    .sales-page .sales-page-header h2 {
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .sales-page .sales-page-header p {
+        font-size: 13px;
+    }
+
+    /* Compact cards */
+    .sales-page .card {
+        min-width: 0;
+        border: 1px solid #e5e7eb;
+        border-radius: 9px;
+        overflow: hidden;
+    }
+
+    .sales-page .card-header {
+        padding: 10px 14px;
+    }
+
+    .sales-page .card-header h5 {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .sales-page .card-body {
+        padding: 14px;
+        min-width: 0;
+    }
+
+    /* Form labels */
+    .sales-page .form-label {
+        margin-bottom: 5px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Form controls */
+    .sales-page .form-control,
+    .sales-page .form-select {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+
+    /* Buttons */
+    .sales-page .btn {
+        font-size: 13px;
+        padding: 7px 12px;
+        border-radius: 6px;
+    }
+
+    .sales-page .btn-sm {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    /* Filter and lookup spacing */
+    .sales-page .card.mb-4 {
+        margin-bottom: 14px !important;
+    }
+
+    .sales-page .row {
+        min-width: 0;
+    }
+
+    /* Filter information */
+    .sales-page .alert {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+    /* Sales table */
+    .sales-page .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sales-page .table {
+        margin-bottom: 0;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .sales-page .table thead th {
+        padding: 9px 10px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .sales-page .table tbody td {
+        padding: 8px 10px;
+        line-height: 1.35;
+    }
+
+    .sales-page .table tbody td strong {
+        font-size: 12px;
+    }
+
+    .sales-page .table tbody td small {
+        font-size: 10px;
+    }
+
+    .sales-page .table tbody td .mb-1 {
+        margin-bottom: 3px !important;
+    }
+
+    /* Table action buttons */
+    .sales-page .table td:last-child {
+        white-space: nowrap;
+    }
+
+    .sales-page .table td:last-child .btn {
+        margin: 2px 0;
+    }
+
+    /* Sale count badge */
+    .sales-page .badge {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+
+    /* Empty state */
+    .sales-page .empty-sales {
+        padding: 28px 12px !important;
+    }
+
+    .sales-page .empty-sales h5 {
+        font-size: 16px;
+    }
+
+    .sales-page .empty-sales p {
+        font-size: 12px;
+    }
+
+    /* Tablet */
+    @media (max-width: 991.98px) {
+        .sales-page {
+            padding: 16px 12px !important;
+        }
+
+        .sales-page .sales-page-header h2 {
+            font-size: 23px;
+        }
+
+        .sales-page .card-header {
+            padding: 9px 12px;
+        }
+
+        .sales-page .card-body {
+            padding: 12px;
+        }
+
+        .sales-page .row.g-3 {
+            --bs-gutter-y: 0.75rem;
+            --bs-gutter-x: 0.75rem;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 575.98px) {
+        .sales-page {
+            padding: 12px 8px !important;
+        }
+
+        .sales-page .sales-page-header {
+            align-items: flex-start !important;
+            margin-bottom: 14px !important;
+        }
+
+        .sales-page .sales-page-header h2 {
+            font-size: 20px;
+        }
+
+        .sales-page .sales-page-header p {
+            font-size: 11px;
+        }
+
+        .sales-page .sales-page-header > a {
+            flex-shrink: 0;
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+
+        .sales-page .card.mb-4 {
+            margin-bottom: 10px !important;
+        }
+
+        .sales-page .card-header {
+            padding: 8px 10px;
+        }
+
+        .sales-page .card-header h5 {
+            font-size: 13px;
+        }
+
+        .sales-page .card-body {
+            padding: 10px;
+        }
+
+        .sales-page .form-label {
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .sales-page .form-control,
+        .sales-page .form-select {
+            min-height: 34px;
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        .sales-page .btn {
+            padding: 7px 9px;
+            font-size: 12px;
+        }
+
+        .sales-page .btn-sm {
+            padding: 5px 7px;
+            font-size: 10px;
+        }
+
+        .sales-page .table {
+            font-size: 11px;
+        }
+
+        .sales-page .table thead th {
+            padding: 7px 8px;
+            font-size: 10px;
+        }
+
+        .sales-page .table tbody td {
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+
+        .sales-page .table tbody td strong {
+            font-size: 11px;
+        }
+
+        .sales-page .table tbody td small {
+            font-size: 9px;
+        }
+
+        .sales-page .table td:last-child {
+            min-width: 155px;
+        }
+
+        .sales-page .empty-sales {
+            padding: 22px 8px !important;
+        }
+
+        .sales-page .empty-sales h5 {
+            font-size: 14px;
+        }
+
+        .sales-page .alert {
+            margin-bottom: 12px !important;
+            font-size: 11px;
+        }
+    }
+
+    /* Very narrow devices */
+    @media (max-width: 360px) {
+        .sales-page {
+            padding: 8px 5px !important;
+        }
+
+        .sales-page .sales-page-header h2 {
+            font-size: 18px;
+        }
+
+        .sales-page .sales-page-header > a {
+            padding: 5px 6px;
+            font-size: 10px;
+        }
+
+        .sales-page .card-body {
+            padding: 8px;
+        }
+
+        .sales-page .card-header h5 {
+            font-size: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid sales-page">
+
+    <!-- PAGE HEADER -->
+    <div class="sales-page-header d-flex justify-content-between align-items-center">
+
+        <div>
+            <h2 class="mb-1">Sales</h2>
+
+            <p class="text-muted mb-0">
+                Manage customer sales and transactions
+            </p>
+        </div>
+
+        <a href="{% url 'inventory:sale_create' %}"
+           class="btn btn-primary">
+
+            <i class="bi bi-cart-plus"></i>
+            Create Sale
+
+        </a>
+
+    </div>
+
+
+    <!-- FR9.3 QUICK INVOICE LOOKUP -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="bi bi-receipt"></i>
+                Quick Invoice Lookup
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="GET"
+                  action="{% url 'inventory:invoice_lookup' %}">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-8">
+
+                        <label for="invoice_id" class="form-label">
+                            Invoice Number
+                        </label>
+
+                        <input type="number"
+                               name="invoice_id"
+                               id="invoice_id"
+                               class="form-control"
+                               placeholder="Enter invoice number, e.g. 15"
+                               min="1"
+                               required>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+                            Find Invoice
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- FR9.2 SALES FILTERS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-white">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel"></i>
+                Filter Sales
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+                    <div class="col-6 col-md-3">
+
+                        <label for="from_date" class="form-label">
+                            From Date
+                        </label>
+
+                        <input type="date"
+                               name="from_date"
+                               id="from_date"
+                               class="form-control"
+                               value="{{ from_date }}">
+
+                    </div>
+
+                    <div class="col-6 col-md-3">
+
+                        <label for="to_date" class="form-label">
+                            To Date
+                        </label>
+
+                        <input type="date"
+                               name="to_date"
+                               id="to_date"
+                               class="form-control"
+                               value="{{ to_date }}">
+
+                    </div>
+
+                    <div class="col-6 col-md-3">
+
+                        <label for="customer" class="form-label">
+                            Customer
+                        </label>
+
+                        <select name="customer"
+                                id="customer"
+                                class="form-select">
+
+                            <option value="">All Customers</option>
+
+                            {% for customer in customers %}
+                                <option value="{{ customer.CustomerId }}"
+                                    {% if selected_customer == customer.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+                                    {{ customer.Name }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-6 col-md-3">
+
+                        <label for="product" class="form-label">
+                            Product
+                        </label>
+
+                        <select name="product"
+                                id="product"
+                                class="form-select">
+
+                            <option value="">All Products</option>
+
+                            {% for product in products %}
+                                <option value="{{ product.ProductId }}"
+                                    {% if selected_product == product.pk|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+                                    {{ product.Name }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i>
+                                Apply Filters
+                            </button>
+
+                            <a href="{% url 'inventory:sale_list' %}"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Clear Filters
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVE FILTER INFORMATION -->
+    {% if from_date or to_date or selected_customer or selected_product %}
+
+        <div class="alert alert-info d-flex align-items-center mb-4">
+
+            <i class="bi bi-info-circle me-2"></i>
+
+            <div>
+                <strong>Filters Applied</strong>
+                <span class="ms-1">
+                    Showing filtered sales results.
+                </span>
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- SALES TABLE -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center gap-2">
+
+                <h5 class="mb-0">
+                    <i class="bi bi-receipt"></i>
+                    Sales List
+                </h5>
+
+                {% if sales %}
+                    <span class="badge bg-primary">
+                        {{ sales|length }}
+                        Sale{{ sales|length|pluralize }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if sales %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Products</th>
+                                <th class="text-end">Total Amount</th>
+                                <th>Remarks</th>
+                                <th class="text-center" style="min-width: 190px;">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for sale in sales %}
+
+                                <tr>
+
+                                    <!-- SALE ID -->
+                                    <td>
+                                        <a href="{% url 'inventory:sale_detail' sale.SaleId %}"
+                                           class="text-decoration-none">
+                                            <strong>#{{ sale.SaleId }}</strong>
+                                        </a>
+                                    </td>
+
+                                    <!-- SALE DATE -->
+                                    <td>
+                                        <div>
+                                            {{ sale.SaleDate|date:"d M Y" }}
+                                        </div>
+
+                                        <small class="text-muted">
+                                            {{ sale.SaleDate|date:"h:i A" }}
+                                        </small>
+                                    </td>
+
+                                    <!-- CUSTOMER -->
+                                    <td>
+                                        {% if sale.Customer %}
+                                            <strong>{{ sale.Customer.Name }}</strong>
+                                        {% else %}
+                                            <span class="text-muted">
+                                                Walk-in Customer
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- PRODUCTS -->
+                                    <td>
+                                        {% for detail in sale.details.all %}
+                                            <div class="mb-1">
+                                                <strong>{{ detail.Product.Name }}</strong>
+                                                <span class="text-muted">
+                                                    × {{ detail.Quantity }}
+                                                </span>
+                                            </div>
+                                        {% empty %}
+                                            <span class="text-muted">
+                                                No products
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+
+                                    <!-- TOTAL AMOUNT -->
+                                    <td class="text-end">
+                                        <strong class="text-success">
+                                            {{ sale.TotalAmount }}
+                                        </strong>
+                                    </td>
+
+                                    <!-- REMARKS -->
+                                    <td>
+                                        {% if sale.Remarks %}
+                                            {{ sale.Remarks }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- ACTIONS -->
+                                    <td class="text-center">
+
+                                        <a href="{% url 'inventory:sale_detail' sale.SaleId %}"
+                                           class="btn btn-sm btn-primary"
+                                           title="View Sale">
+
+                                            <i class="bi bi-eye"></i>
+                                            View
+
+                                        </a>
+
+                                        <a href="{% url 'inventory:sale_invoice' sale.SaleId %}"
+                                           target="_blank"
+                                           class="btn btn-sm btn-success ms-1"
+                                           title="View / Print Invoice">
+
+                                            <i class="bi bi-printer"></i>
+                                            Invoice
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <!-- EMPTY STATE -->
+                <div class="empty-sales text-center">
+
+                    <div class="mb-3">
+                        <i class="bi bi-cart-x" style="font-size: 2.5rem;"></i>
+                    </div>
+
+                    <h5>No Sales Found</h5>
+
+                    {% if from_date or to_date or selected_customer or selected_product %}
+
+                        <p class="text-muted">
+                            No sales match the selected filters.
+                        </p>
+
+                        <a href="{% url 'inventory:sale_list' %}"
+                           class="btn btn-outline-secondary">
+
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            Clear Filters
+
+                        </a>
+
+                    {% else %}
+
+                        <p class="text-muted">
+                            There are currently no sales in the system.
+                        </p>
+
+                        <a href="{% url 'inventory:sale_create' %}"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-cart-plus"></i>
+                            Create First Sale
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

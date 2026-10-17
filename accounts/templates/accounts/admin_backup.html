@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Database Backup - Inventory Management System</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #f4f6f9;
+            font-family: Arial, sans-serif;
+            color: #212529;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #0d6efd;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .topbar h4 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .backup-container {
+            max-width: 900px;
+            margin: 70px auto;
+        }
+
+        .backup-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .backup-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .backup-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .backup-card p {
+            line-height: 1.7;
+        }
+
+        .backup-button {
+            min-width: 260px;
+        }
+
+        .security-info {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 576px) {
+            .topbar {
+                padding: 15px;
+            }
+
+            .topbar h4 {
+                font-size: 16px;
+            }
+
+            .backup-container {
+                margin: 30px auto;
+                padding: 0 12px;
+            }
+
+            .backup-card {
+                padding: 20px;
+            }
+
+            .backup-card h1 {
+                font-size: 24px;
+            }
+
+            .backup-button {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <h4 class="mb-0">
+                Inventory Management System
+            </h4>
+
+            <a
+                href="{% url 'admin_dashboard' %}"
+                class="btn btn-light"
+            >
+                Admin Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container backup-container">
+        <section class="backup-card">
+
+            <div class="backup-icon" aria-hidden="true">💾</div>
+
+            <h1 class="mb-3">Database Backup</h1>
+
+            <p class="text-muted mb-4">
+                Create and download a backup of your Inventory
+                Management System MySQL database as an SQL file.
+                Store the downloaded file securely for future recovery.
+            </p>
+
+            <!-- Django Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div
+                        class="alert alert-{{ message.tags|default:'info' }}"
+                        role="alert"
+                    >
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Optional View Context Messages -->
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>Backup Failed:</strong> {{ error }}
+                </div>
+            {% endif %}
+
+            {% if success %}
+                <div class="alert alert-success" role="alert">
+                    {{ success }}
+                </div>
+            {% endif %}
+
+            <!-- Backup Download Form -->
+            <form
+                id="backupForm"
+                method="post"
+                action="{% url 'accounts:admin_backup' %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    id="backupButton"
+                    class="btn btn-success btn-lg backup-button"
+                >
+                    💾 Download Database Backup
+                </button>
+            </form>
+
+            <hr class="my-4">
+
+            <!-- Security Information -->
+            <div class="alert alert-warning security-info mb-0">
+                <strong>Security:</strong>
+                Only administrator users can create database backups.
+                Downloaded SQL files may contain sensitive business
+                information. Store them securely.
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

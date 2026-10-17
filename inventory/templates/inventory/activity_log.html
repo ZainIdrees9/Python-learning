@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Activity Logs - Stock, Inventory and Sales Management System</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background-color: #f5f7fa;
+            font-size: 14px;
+        }
+
+        .page-container {
+            width: 95%;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 600;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .filter-card {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .logs-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .table td {
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .action-badge {
+            font-size: 11px;
+            padding: 6px 9px;
+            border-radius: 20px;
+        }
+
+        .description {
+            max-width: 350px;
+            word-break: break-word;
+        }
+
+        .ip-address {
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .empty-message {
+            padding: 45px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .btn-search {
+            min-width: 90px;
+        }
+
+        .btn-reset {
+            min-width: 80px;
+        }
+
+        @media (max-width: 768px) {
+
+            .page-container {
+                width: 96%;
+                margin: 20px auto;
+            }
+
+            .page-title {
+                font-size: 21px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .description {
+                max-width: 220px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-container">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="mb-4">
+
+        <h2 class="page-title">
+            Activity Logs
+        </h2>
+
+        <p class="page-subtitle mb-0">
+            View and monitor user activities performed in the system.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTER SECTION
+    ====================================================== -->
+
+    <div class="card shadow-sm filter-card mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+
+                    <!-- Search -->
+
+                    <div class="col-md-4">
+
+                        <label class="filter-label">
+                            Search
+                        </label>
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search user, action or description..."
+                            value="{{ search }}"
+                        >
+
+                    </div>
+
+
+                    <!-- Action -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Action
+                        </label>
+
+                        <select
+                            name="action"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Actions
+                            </option>
+
+                            {% for item in actions %}
+
+                                <option
+                                    value="{{ item }}"
+                                    {% if selected_action == item %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ item }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Module -->
+
+                    <div class="col-md-3">
+
+                        <label class="filter-label">
+                            Module
+                        </label>
+
+                        <select
+                            name="module"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Modules
+                            </option>
+
+                            {% for item in modules %}
+
+                                <option
+                                    value="{{ item }}"
+                                    {% if selected_module == item %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ item }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+
+                    <div class="col-md-2 d-flex align-items-end gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-search"
+                        >
+                            Search
+                        </button>
+
+                        <a
+                            href="{% url 'inventory:activity_log' %}"
+                            class="btn btn-outline-secondary btn-reset"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ACTIVITY LOG TABLE
+    ====================================================== -->
+
+    <div class="card shadow-sm logs-card">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+                    Activity History
+                </h5>
+
+                <span class="badge bg-primary">
+                    {{ logs|length }} Records
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            User
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                        <th>
+                            Module
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            IP Address
+                        </th>
+
+                        <th>
+                            Date & Time
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for log in logs %}
+
+                    <tr>
+
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
+
+
+                        <!-- User -->
+
+                        <td>
+
+                            {% if log.User %}
+
+                                <strong>
+                                    {{ log.User.username }}
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+
+                                    {% if log.User.role %}
+                                        {{ log.User.role }}
+                                    {% endif %}
+
+                                </small>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    System
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Action -->
+
+                        <td>
+
+                            <span class="badge bg-primary action-badge">
+                                {{ log.Action }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Module -->
+
+                        <td>
+
+                            {% if log.Module %}
+
+                                {{ log.Module }}
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Description -->
+
+                        <td class="description">
+
+                            {% if log.Description %}
+
+                                {{ log.Description }}
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- IP Address -->
+
+                        <td>
+
+                            {% if log.IPAddress %}
+
+                                <span class="ip-address">
+                                    {{ log.IPAddress }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Date -->
+
+                        <td class="text-nowrap">
+
+                            {{ log.CreatedAt|date:"d M Y" }}
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ log.CreatedAt|date:"h:i A" }}
+                            </small>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-message"
+                        >
+
+                            <h6>
+                                No Activity Logs Found
+                            </h6>
+
+                            <p class="mb-0">
+                                There are no activity records matching your search.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+</body>
+
+</html>

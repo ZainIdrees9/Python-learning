@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+                Profit / Loss Report
+            </h2>
+
+            <p class="text-muted mb-0">
+                Financial performance for the selected year
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'manager_dashboard' %}"
+            class="btn btn-secondary">
+
+            ← Dashboard
+
+        </a>
+
+    </div>
+
+
+    <!-- YEAR FILTER -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="GET"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+
+                    <label
+                        for="year"
+                        class="form-label">
+
+                        Select Year
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="year"
+                        name="year"
+                        value="{{ selected_year }}"
+                        class="form-control"
+                        min="2000"
+                        max="2100">
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        View Report
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- SALES REVENUE -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Total Sales Revenue
+                    </h6>
+
+                    <h3 class="text-primary">
+
+                        Rs.
+                        {{ total_sales_revenue|floatformat:2 }}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Before returns
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- COST -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Cost of Goods Sold
+                    </h6>
+
+                    <h3 class="text-warning">
+
+                        Rs.
+                        {{ total_cost_of_goods_sold|floatformat:2 }}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Product purchase cost
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RETURNS -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <h6 class="text-muted">
+                        Sales Returns
+                    </h6>
+
+                    <h3 class="text-danger">
+
+                        Rs.
+                        {{ total_returns|floatformat:2 }}
+
+                    </h3>
+
+                    <small class="text-muted">
+
+                        Returned sales amount
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- NET FINANCIAL SUMMARY -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+
+                Financial Summary
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered align-middle">
+
+                    <tbody>
+
+                        <tr>
+
+                            <th>
+                                Total Sales Revenue
+                            </th>
+
+                            <td class="text-end">
+
+                                Rs.
+                                {{ total_sales_revenue|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Less: Sales Returns
+                            </th>
+
+                            <td class="text-end text-danger">
+
+                                Rs.
+                                {{ total_returns|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr class="table-light">
+
+                            <th>
+                                Net Sales
+                            </th>
+
+                            <td class="text-end fw-bold">
+
+                                Rs.
+                                {{ net_sales|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Cost of Goods Sold
+                            </th>
+
+                            <td class="text-end">
+
+                                Rs.
+                                {{ total_cost_of_goods_sold|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th>
+                                Less: Returned Product Cost
+                            </th>
+
+                            <td class="text-end text-success">
+
+                                Rs.
+                                {{ returned_cost|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr class="table-light">
+
+                            <th>
+                                Net Cost of Goods Sold
+                            </th>
+
+                            <td class="text-end fw-bold">
+
+                                Rs.
+                                {{ net_cost_of_goods_sold|floatformat:2 }}
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PROFIT / LOSS -->
+
+                        <tr>
+
+                            <th class="fs-5">
+
+                                Gross Profit / Loss
+
+                            </th>
+
+                            <td class="text-end fs-5 fw-bold">
+
+                                {% if gross_profit >= 0 %}
+
+                                    <span class="text-success">
+
+                                        Profit:
+                                        Rs.
+                                        {{ gross_profit|floatformat:2 }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-danger">
+
+                                        Loss:
+                                        Rs.
+                                        {{ gross_profit|floatformat:2 }}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- PROFIT MARGIN -->
+
+                        <tr>
+
+                            <th>
+                                Profit Margin
+                            </th>
+
+                            <td class="text-end fw-bold">
+
+                                {{ profit_margin|floatformat:2 }}%
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- REPORT INFORMATION -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h5>
+                Report Information
+            </h5>
+
+            <p class="text-muted mb-0">
+
+                This report calculates gross profit or loss using
+                sales revenue, product cost, and sales returns for
+                the selected year.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       MEDIUM FONT SIZES
+    ========================================= */
+
+    .sale-page {
+        font-size: 15px;
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .sale-page h2 {
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    .sale-page h5 {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .sale-page p {
+        font-size: 15px;
+    }
+
+    .sale-page small {
+        font-size: 13px;
+    }
+
+    .sale-page .fw-bold {
+        font-size: 15px;
+    }
+
+    .sale-page .fs-5 {
+        font-size: 18px !important;
+    }
+
+    .sale-page .btn {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .sale-page table {
+        font-size: 15px;
+    }
+
+    .sale-page table th {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .sale-page table td {
+        font-size: 15px;
+    }
+
+    .sale-page .card-header {
+        padding: 14px 18px;
+    }
+
+    .sale-page .card-body {
+        padding: 20px;
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 992px) {
+        .sale-page {
+            width: 90%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sale-page {
+            width: 95%;
+        }
+    }
+
+</style>
+
+<div class="sale-page py-4">
+
+
+<!-- =========================================
+     HEADER
+========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Sale #{{ sale.SaleId }}
+        </h2>
+
+        <p class="text-muted mb-0">
+            Sale details and transaction information
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a
+            href="{% url 'inventory:sale_invoice' sale.SaleId %}"
+            target="_blank"
+            class="btn btn-success"
+        >
+
+            <i class="bi bi-printer"></i>
+
+            Print Invoice
+
+        </a>
+
+
+        <a
+            href="{% url 'inventory:sale_list' %}"
+            class="btn btn-secondary ms-2"
+        >
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Sales
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     SALE INFORMATION
+========================================== -->
+
+<div class="card shadow-sm mb-4">
+
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-receipt"></i>
+
+            Sale Information
+
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="row">
+
+
+            <!-- SALE ID -->
+
+            <div class="col-md-3 mb-3">
+
+                <small class="text-muted">
+                    Sale ID
+                </small>
+
+                <div class="fw-bold">
+                    #{{ sale.SaleId }}
+                </div>
+
+            </div>
+
+
+            <!-- SALE DATE -->
+
+            <div class="col-md-3 mb-3">
+
+                <small class="text-muted">
+                    Sale Date
+                </small>
+
+                <div class="fw-bold">
+
+                    {{ sale.SaleDate|date:"d M Y, h:i A" }}
+
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOMER -->
+
+            <div class="col-md-3 mb-3">
+
+                <small class="text-muted">
+                    Customer
+                </small>
+
+                <div class="fw-bold">
+
+                    {% if sale.Customer %}
+
+                        {{ sale.Customer.Name }}
+
+                    {% else %}
+
+                        Walk-in Customer
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL AMOUNT -->
+
+            <div class="col-md-3 mb-3">
+
+                <small class="text-muted">
+                    Total Amount
+                </small>
+
+                <div class="fw-bold text-success fs-5">
+
+                    {{ sale.TotalAmount }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if sale.Remarks %}
+
+            <hr>
+
+            <div>
+
+                <small class="text-muted">
+                    Remarks
+                </small>
+
+                <p class="mb-0">
+                    {{ sale.Remarks }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     PRODUCTS
+========================================== -->
+
+<div class="card shadow-sm">
+
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-box-seam"></i>
+
+            Products
+
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+
+            <table
+                class="table table-bordered table-hover align-middle"
+            >
+
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th style="width: 60px;">
+                            #
+                        </th>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th class="text-center">
+                            Quantity
+                        </th>
+
+                        <th class="text-end">
+                            Selling Price
+                        </th>
+
+                        <th class="text-end">
+                            Line Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for detail in details %}
+
+                        <tr>
+
+
+                            <!-- NUMBER -->
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <!-- PRODUCT -->
+
+                            <td>
+
+                                <strong>
+                                    {{ detail.Product.Name }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- QUANTITY -->
+
+                            <td class="text-center">
+
+                                {{ detail.Quantity }}
+
+                            </td>
+
+
+                            <!-- SELLING PRICE -->
+
+                            <td class="text-end">
+
+                                {{ detail.SellingPrice }}
+
+                            </td>
+
+
+                            <!-- LINE TOTAL -->
+
+                            <td class="text-end">
+
+                                <strong>
+                                    {{ detail.Total }}
+                                </strong>
+
+                            </td>
+
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center text-muted py-4"
+                            >
+
+                                No products found for this sale.
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+
+                <!-- =================================
+                     GRAND TOTAL
+                ================================== -->
+
+                <tfoot>
+
+                    <tr>
+
+                        <th
+                            colspan="4"
+                            class="text-end"
+                        >
+
+                            Grand Total
+
+                        </th>
+
+                        <th
+                            class="text-end text-success fs-5"
+                        >
+
+                            {{ sale.TotalAmount }}
+
+                        </th>
+
+                    </tr>
+
+                </tfoot>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     BUTTONS
+========================================== -->
+
+<div class="mt-4">
+
+
+    <a
+        href="{% url 'inventory:sale_invoice' sale.SaleId %}"
+        target="_blank"
+        class="btn btn-success"
+    >
+
+        <i class="bi bi-printer"></i>
+
+        Print Invoice
+
+    </a>
+
+
+    <a
+        href="{% url 'inventory:sale_return_create' sale.SaleId %}"
+        class="btn btn-danger ms-2"
+    >
+
+    <i class="bi bi-arrow-return-left"></i>
+
+    Process Return
+
+    </a>
+
+    <a
+        href="{% url 'inventory:sale_list' %}"
+        class="btn btn-secondary ms-2"
+    >
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back to Sales
+
+    </a>
+
+
+</div>
+
+
+</div>
+
+{% endblock %}

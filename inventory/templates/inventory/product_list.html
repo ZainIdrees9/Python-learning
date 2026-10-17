@@ -1,0 +1,862 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================================
+       PRODUCT LIST PAGE
+    ========================================================= */
+
+    .product-page {
+        width: 90%;
+        margin: 0 auto;
+        font-size: 15px;
+    }
+
+    /* =========================================================
+       MEDIUM FONT SIZES
+    ========================================================= */
+
+    .product-page h2 {
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    .product-page h5 {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .product-page p {
+        font-size: 15px;
+    }
+
+    .product-page small {
+        font-size: 13px;
+    }
+
+    .product-page .btn {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .product-page table {
+        font-size: 15px;
+    }
+
+    .product-page table th {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .product-page table td {
+        font-size: 15px;
+    }
+
+    /* =========================================================
+       CATEGORY DROPDOWN
+    ========================================================= */
+
+    #category {
+        background-color: #ffffff;
+        color: #212529;
+        border: 1px solid #ced4da;
+        min-height: 38px;
+        cursor: pointer;
+    }
+
+    #category:focus {
+        background-color: #ffffff;
+        color: #212529;
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    #category option {
+        background-color: #ffffff;
+        color: #212529;
+        padding: 8px;
+    }
+
+    /* =========================================================
+       PRODUCT TABLE
+    ========================================================= */
+
+    .product-table th {
+        white-space: nowrap;
+    }
+
+    .product-table td {
+        vertical-align: middle;
+    }
+
+    .category-badge {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    /* =========================================================
+       FILTER CARD
+    ========================================================= */
+
+    .filter-card {
+        border: none;
+    }
+
+    .filter-card .card-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* =========================================================
+       ACTION BUTTONS
+    ========================================================= */
+
+    .action-buttons {
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+       RESPONSIVE DESIGN
+    ========================================================= */
+
+    @media (max-width: 992px) {
+
+        .product-page {
+            width: 92%;
+        }
+
+    }
+
+    @media (max-width: 768px) {
+
+        .product-page {
+            width: 95%;
+        }
+
+        .filter-buttons {
+            width: 100%;
+        }
+
+        .filter-buttons .btn {
+            flex: 1;
+        }
+
+    }
+
+    @media (max-width: 576px) {
+
+        .product-page {
+            width: 96%;
+        }
+
+    }
+
+</style>
+
+<div class="product-page py-4">
+
+
+<!-- =====================================================
+     PAGE HEADER
+====================================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            Products
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage inventory products
+        </p>
+
+    </div>
+
+
+    <!-- ADD PRODUCT
+         ADMIN + MANAGER ONLY -->
+
+    {% if is_management %}
+
+        <a  
+            href="{% url 'inventory:product_create' %}"
+            class="btn btn-primary"
+        >
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Product
+
+        </a>
+
+    {% endif %}
+
+</div>
+
+
+
+<!-- =====================================================
+     SEARCH & FILTER
+====================================================== -->
+
+<div class="card shadow-sm mb-4 filter-card">
+
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-search"></i>
+
+            Search & Filter Products
+
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+        <form
+            method="GET"
+            id="filterForm"
+        >
+
+            <div class="row g-3 align-items-end">
+
+
+                <!-- PRODUCT NAME -->
+
+                <div class="col-md-5">
+
+                    <label
+                        for="search"
+                        class="form-label"
+                    >
+
+                        Product Name
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="search"
+                        name="q"
+                        value="{{ search_query }}"
+                        class="form-control"
+                        placeholder="Search product name..."
+                    >
+
+                </div>
+
+
+
+                <!-- CATEGORY -->
+
+                <div class="col-md-4">
+
+                    <label
+                        for="category"
+                        class="form-label"
+                    >
+
+                        Category
+
+                    </label>
+
+
+                    <select
+                        id="category"
+                        name="category"
+                        class="form-select"
+                    >
+
+                        <option value="">
+
+                            All Categories
+
+                        </option>
+
+
+                        {% for category in categories %}
+
+                            <option
+                                value="{{ category.CT_Id }}"
+                                {% if category_query == category.CT_Id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ category.Name }}
+
+                            </option>
+
+
+                        {% empty %}
+
+                            <option
+                                value=""
+                                disabled
+                            >
+
+                                No categories available
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="col-md-3">
+
+                    <div class="d-flex gap-2 filter-buttons">
+
+
+                        <!-- SEARCH BUTTON -->
+
+                        <button
+                            type="submit"
+                            name="search"
+                            value="1"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+
+                        <!-- RESET BUTTON -->
+
+                        <a
+                            href="{% url 'inventory:product_list' %}"
+                            class="btn btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise"></i>
+
+                            Reset
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     PRODUCTS TABLE
+====================================================== -->
+
+<div class="card shadow-sm">
+
+
+    <!-- TABLE HEADER -->
+
+    <div class="card-header bg-white">
+
+        <div
+            class="d-flex justify-content-between align-items-center"
+        >
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-box-seam"></i>
+
+                Inventory Product List
+
+            </h5>
+
+
+            <span class="badge bg-primary">
+
+                {{ products|length }}
+
+                Product{{ products|length|pluralize }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TABLE BODY -->
+
+    <div class="card-body">
+
+
+        {% if products %}
+
+            <div class="table-responsive">
+
+
+                <table
+                    class="table table-hover align-middle product-table"
+                >
+
+
+                    <!-- TABLE HEAD -->
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Product Name
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th class="text-center">
+                                Remaining Stock
+                            </th>
+
+                            <th class="text-center">
+                                Stock Status
+                            </th>
+
+                            <th class="text-end">
+                                Cost Price
+                            </th>
+
+                            <th class="text-end">
+                                Selling Price
+                            </th>
+
+
+                            <!-- ACTIONS
+                                 ADMIN + MANAGER ONLY -->
+
+                            {% if is_management %}
+
+                                <th class="text-center">
+                                    Actions
+                                </th>
+
+                            {% endif %}
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <!-- TABLE DATA -->
+
+                    <tbody>
+
+
+                        {% for product in products %}
+
+                            <tr>
+
+
+                                <!-- PRODUCT ID -->
+
+                                <td>
+
+                                    #{{ product.ProductId }}
+
+                                </td>
+
+
+
+                                <!-- PRODUCT NAME -->
+
+                                <td>
+
+                                    <strong>
+
+                                        {{ product.Name }}
+
+                                    </strong>
+
+                                </td>
+
+
+
+                                <!-- CATEGORY -->
+
+                                <td>
+
+                                    {% if product.Category %}
+
+                                        <span
+                                            class="badge bg-secondary category-badge"
+                                        >
+
+                                            {{ product.Category.Name }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+
+                                            No Category
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- CURRENT STOCK -->
+
+                                <!-- REMAINING STOCK -->
+                                <td class="text-center">
+
+                                <strong>
+                                       {{ product.CurrentStock }}
+                                </strong>
+
+                                </td>
+
+
+                                <!-- STOCK STATUS -->
+                                <td class="text-center">
+
+                                {% if product.CurrentStock == 0 %}
+
+                                    <span class="badge bg-danger">
+                                        Out of Stock
+                                    </span>
+
+                                {% elif product.CurrentStock <= 5 %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Low Stock
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-success">
+                                        In Stock
+                                    </span>
+
+                                {% endif %}
+
+                                </td>
+
+
+
+                                <!-- COST PRICE -->
+
+                                <td class="text-end">
+
+                                    {{ product.CostPrice }}
+
+                                </td>
+
+
+
+                                <!-- SELLING PRICE -->
+
+                                <td class="text-end">
+
+                                    <strong>
+
+                                        {{ product.UnitPrice }}
+
+                                    </strong>
+
+                                </td>
+
+
+
+                                <!-- ACTION BUTTONS
+                                     ADMIN + MANAGER ONLY -->
+
+                                {% if is_management %}
+
+                                    <td
+                                        class="text-center action-buttons"
+                                    >
+
+
+                                        <!-- EDIT -->
+
+                                        <a
+                                            href="{% url 'inventory:product_edit' product.ProductId %}"
+                                            class="btn btn-sm btn-warning"
+                                            title="Edit Product"
+                                        >
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+
+                                        <!-- DELETE -->
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-danger"
+                                            title="Delete Product"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ product.ProductId }}"
+                                        >
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+
+                                    </td>
+
+                                {% endif %}
+
+
+                            </tr>
+
+
+
+                            <!-- =================================================
+                                 DELETE CONFIRMATION MODAL
+                                 ADMIN + MANAGER ONLY
+                            ================================================== -->
+
+                            {% if is_management %}
+
+                                <div
+                                    class="modal fade"
+                                    id="deleteModal{{ product.ProductId }}"
+                                    tabindex="-1"
+                                    aria-hidden="true"
+                                >
+
+                                    <div
+                                        class="modal-dialog modal-dialog-centered"
+                                    >
+
+                                        <div class="modal-content">
+
+
+                                            <!-- MODAL HEADER -->
+
+                                            <div
+                                                class="modal-header bg-danger text-white"
+                                            >
+
+                                                <h5 class="modal-title">
+
+                                                    <i class="bi bi-trash"></i>
+
+                                                    Confirm Delete
+
+                                                </h5>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"
+                                                ></button>
+
+                                            </div>
+
+
+
+                                            <!-- MODAL BODY -->
+
+                                            <div
+                                                class="modal-body text-center"
+                                            >
+
+                                                <i
+                                                    class="bi bi-exclamation-triangle-fill text-warning"
+                                                    style="font-size: 3rem;"
+                                                ></i>
+
+
+                                                <h5 class="mt-3">
+
+                                                    Delete Product?
+
+                                                </h5>
+
+
+                                                <p class="text-muted">
+
+                                                    Are you sure you want
+                                                    to delete
+
+                                                    <strong>
+
+                                                        {{ product.Name }}
+
+                                                    </strong>?
+
+                                                </p>
+
+
+                                                <p class="text-danger small">
+
+                                                    This action cannot
+                                                    be undone.
+
+                                                </p>
+
+                                            </div>
+
+
+
+                                            <!-- MODAL FOOTER -->
+
+                                            <div
+                                                class="modal-footer justify-content-center"
+                                            >
+
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal"
+                                                >
+
+                                                    Cancel
+
+                                                </button>
+
+
+
+                                                <form
+                                                    method="POST"
+                                                    action="{% url 'inventory:product_delete' product.ProductId %}"
+                                                >
+
+                                                    {% csrf_token %}
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-danger"
+                                                    >
+
+                                                        <i class="bi bi-trash"></i>
+
+                                                        Yes, Delete
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 NO PRODUCTS
+            ================================================== -->
+
+            <div class="text-center py-5">
+
+
+                <div class="mb-3">
+
+                    <i
+                        class="bi bi-search"
+                        style="font-size: 3rem;"
+                    ></i>
+
+                </div>
+
+
+                <h5>
+
+                    No Products Found
+
+                </h5>
+
+
+                <p class="text-muted">
+
+                    No products match your search
+                    or category filter.
+
+                </p>
+
+
+                <a
+                    href="{% url 'inventory:product_list' %}"
+                    class="btn btn-secondary"
+                >
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    Clear Search
+
+                </a>
+
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

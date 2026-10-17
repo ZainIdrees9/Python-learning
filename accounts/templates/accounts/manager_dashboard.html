@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Manager Dashboard
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    /* =========================================================
+       MANAGER DASHBOARD
+    ========================================================= */
+
+    .manager-dashboard {
+        background-color: #f4f6f9;
+        min-height: calc(100vh - 64px);
+        padding: 25px;
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* Dashboard cards */
+    .manager-dashboard .dashboard-card {
+        border: none;
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+        overflow: hidden;
+    }
+
+    .manager-dashboard .dashboard-card:hover {
+        transform: translateY(-3px);
+    }
+
+    /* Card body */
+    .manager-dashboard .dashboard-card .card-body {
+        padding: 22px;
+    }
+
+    /* Card titles */
+    .manager-dashboard .card-title {
+        font-weight: 600;
+    }
+
+    .manager-dashboard .dashboard-card h4 {
+        font-size: 21px;
+    }
+
+    .manager-dashboard .dashboard-card p {
+        font-size: 14px;
+    }
+
+    /* Buttons */
+    .manager-dashboard .btn {
+        white-space: nowrap;
+    }
+
+    /* Action groups */
+    .manager-dashboard .dashboard-actions,
+    .manager-dashboard .inventory-actions,
+    .manager-dashboard .report-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* Medium screens */
+    @media (max-width: 992px) {
+        .manager-dashboard {
+            padding: 25px 20px;
+        }
+
+        .manager-dashboard .dashboard-card .card-body {
+            padding: 20px;
+        }
+
+        .manager-dashboard .dashboard-card h4 {
+            font-size: 20px;
+        }
+    }
+
+    /* Tablet */
+    @media (max-width: 768px) {
+        .manager-dashboard {
+            padding: 20px 15px;
+        }
+
+        .manager-dashboard > .mb-4 h2 {
+            font-size: 25px;
+        }
+
+        .manager-dashboard > .mb-4 p {
+            font-size: 14px;
+        }
+
+        .manager-dashboard .dashboard-card .card-body {
+            padding: 18px;
+        }
+
+        .manager-dashboard .dashboard-card h4 {
+            font-size: 19px;
+        }
+
+        .manager-dashboard .dashboard-actions {
+            width: 100%;
+        }
+
+        .manager-dashboard .dashboard-actions .btn {
+            flex: 1 1 auto;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 576px) {
+        .manager-dashboard {
+            padding: 15px 10px;
+        }
+
+        .manager-dashboard > .mb-4 {
+            margin-bottom: 20px !important;
+        }
+
+        .manager-dashboard > .mb-4 h2 {
+            font-size: 22px;
+        }
+
+        .manager-dashboard > .mb-4 p {
+            font-size: 13px;
+        }
+
+        .manager-dashboard .dashboard-card .card-body {
+            padding: 15px;
+        }
+
+        .manager-dashboard .dashboard-card h4 {
+            font-size: 18px;
+        }
+
+        .manager-dashboard .dashboard-card p {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .manager-dashboard .btn {
+            font-size: 14px;
+            padding: 9px 12px;
+        }
+
+        .manager-dashboard .dashboard-actions,
+        .manager-dashboard .inventory-actions,
+        .manager-dashboard .report-actions {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .manager-dashboard .dashboard-actions .btn,
+        .manager-dashboard .inventory-actions .btn,
+        .manager-dashboard .report-actions .btn {
+            width: 100%;
+            white-space: normal;
+        }
+
+        .manager-dashboard .mt-5 {
+            margin-top: 25px !important;
+        }
+
+        .manager-dashboard .mt-4 {
+            margin-top: 20px !important;
+        }
+    }
+
+    /* Very small mobile */
+    @media (max-width: 400px) {
+        .manager-dashboard {
+            padding: 12px 8px;
+        }
+
+        .manager-dashboard > .mb-4 h2 {
+            font-size: 20px;
+        }
+
+        .manager-dashboard .dashboard-card .card-body {
+            padding: 13px;
+        }
+
+        .manager-dashboard .dashboard-card h4 {
+            font-size: 17px;
+        }
+
+        .manager-dashboard .dashboard-card p {
+            font-size: 12px;
+        }
+
+        .manager-dashboard .btn {
+            font-size: 13px;
+            padding: 8px 10px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="manager-dashboard">
+
+    <!-- DASHBOARD HEADER -->
+    <div class="mb-4">
+        <h2>
+            Welcome, {{ request.user.username }}
+        </h2>
+
+        <p class="text-muted">
+            Manager Control Panel
+        </p>
+    </div>
+
+    
+    <!-- DASHBOARD CARDS -->
+    <div class="row g-3 g-md-4">
+
+        <!-- PRODUCTS -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+                    
+
+                    <h4 class="card-title">
+                        📦 Products
+                    </h4>
+
+                    <p class="text-muted">
+                        View and manage all products.
+                    </p>
+
+                    <img
+    src="{% static 'images/products.jpg' %}"
+    class="card-img-top"
+    alt="Products"
+    style="height: 200px; object-fit: cover; width: 100%"
+>
+
+                    <a
+                        href="{% url 'inventory:product_list' %}"
+                        class="btn btn-primary">
+
+                        View Products
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTORY -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        📊 Inventory
+                    </h4>
+
+                    <p class="text-muted">
+                        Add stock and monitor inventory.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:stock_entry_list' %}"
+                        class="btn btn-success">
+
+                        Manage Inventory
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SALES -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        🛒 Sales
+                    </h4>
+
+                    <p class="text-muted">
+                        View and manage sales.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:sale_list' %}"
+                        class="btn btn-warning">
+
+                        Sales
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INVENTORY MANAGEMENT -->
+    <div class="card dashboard-card shadow mt-5">
+        <div class="card-body">
+
+            <h4>
+                📦 Inventory Management
+            </h4>
+
+            <p class="text-muted">
+                Manager can add, edit, delete and view products.
+            </p>
+
+            <div class="inventory-actions">
+
+                <a
+                    href="{% url 'inventory:product_list' %}"
+                    class="btn btn-primary">
+
+                    📦 View All Products
+                </a>
+
+                <a
+                    href="{% url 'inventory:product_create' %}"
+                    class="btn btn-success">
+
+                    ➕ Add New Product
+                </a>
+
+                <a
+                    href="{% url 'inventory:stock_entry_create' %}"
+                    class="btn btn-info">
+
+                    ➕ Add Stock
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- QUICK MANAGEMENT -->
+    <div class="row g-3 g-md-4 mt-4">
+
+        <!-- CUSTOMERS -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+
+                    <h4>
+                        👤 Customers
+                    </h4>
+
+                    <p class="text-muted">
+                        Manage customer records.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:customer_list' %}"
+                        class="btn btn-outline-primary">
+
+                        View Customers
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SUPPLIERS -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+
+                    <h4>
+                        🚚 Suppliers
+                    </h4>
+
+                    <p class="text-muted">
+                        Manage supplier records.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:supplier_list' %}"
+                        class="btn btn-outline-success">
+
+                        View Suppliers
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- REPORTS -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body">
+
+                    <h4>
+                        📈 Reports
+                    </h4>
+
+                    <p class="text-muted">
+                        View sales and inventory reports.
+                    </p>
+
+                    <div class="report-actions">
+
+                        <a
+                            href="{% url 'inventory:daily_sales_report' %}"
+                            class="btn btn-outline-dark">
+
+                            Daily Sales
+                        </a>
+
+                        <a
+                            href="{% url 'inventory:inventory_report' %}"
+                            class="btn btn-outline-primary">
+
+                            📋 Inventory Report
+                        </a>
+
+                        <a
+                            href="{% url 'inventory:profit_loss_report' %}"
+                            class="btn btn-outline-success">
+
+                            💰 Profit / Loss
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

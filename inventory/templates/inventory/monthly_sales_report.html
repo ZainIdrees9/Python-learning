@@ -1,0 +1,439 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="mb-1">
+                Monthly Sales Report
+            </h2>
+
+            <p class="text-muted mb-0">
+                {{ month_name }} {{ year }}
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'inventory:daily_sales_report' %}"
+               class="btn btn-outline-primary">
+
+                Daily Report
+
+            </a>
+
+            <a href="{% url 'inventory:yearly_sales_report' %}"
+               class="btn btn-outline-primary ms-2">
+
+                Yearly Report
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTER -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get"
+                  class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+
+                    <label class="form-label fw-bold">
+                        Year
+                    </label>
+
+                    <input type="number"
+                           name="year"
+                           value="{{ year }}"
+                           min="2000"
+                           max="2100"
+                           class="form-control">
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label fw-bold">
+                        Month
+                    </label>
+
+                    <select name="month"
+                            class="form-select">
+
+                        {% for month_number in "123456789101112"|make_list %}
+
+                        {% endfor %}
+
+                        <option value="1"
+                            {% if month == 1 %}selected{% endif %}>
+                            January
+                        </option>
+
+                        <option value="2"
+                            {% if month == 2 %}selected{% endif %}>
+                            February
+                        </option>
+
+                        <option value="3"
+                            {% if month == 3 %}selected{% endif %}>
+                            March
+                        </option>
+
+                        <option value="4"
+                            {% if month == 4 %}selected{% endif %}>
+                            April
+                        </option>
+
+                        <option value="5"
+                            {% if month == 5 %}selected{% endif %}>
+                            May
+                        </option>
+
+                        <option value="6"
+                            {% if month == 6 %}selected{% endif %}>
+                            June
+                        </option>
+
+                        <option value="7"
+                            {% if month == 7 %}selected{% endif %}>
+                            July
+                        </option>
+
+                        <option value="8"
+                            {% if month == 8 %}selected{% endif %}>
+                            August
+                        </option>
+
+                        <option value="9"
+                            {% if month == 9 %}selected{% endif %}>
+                            September
+                        </option>
+
+                        <option value="10"
+                            {% if month == 10 %}selected{% endif %}>
+                            October
+                        </option>
+
+                        <option value="11"
+                            {% if month == 11 %}selected{% endif %}>
+                            November
+                        </option>
+
+                        <option value="12"
+                            {% if month == 12 %}selected{% endif %}>
+                            December
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+                        Generate Report
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    <div class="row mb-4">
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Invoices
+                    </small>
+
+                    <h3 class="fw-bold">
+                        {{ total_invoices }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Items Sold
+                    </small>
+
+                    <h3 class="fw-bold">
+                        {{ total_items }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mb-3">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Sales
+                    </small>
+
+                    <h3 class="fw-bold text-success">
+                        {{ total_sales }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAILY BREAKDOWN -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Daily Sales Breakdown
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if daily_breakdown %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Invoices
+                                </th>
+
+                                <th class="text-end">
+                                    Sales Amount
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for day in daily_breakdown %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ day.SaleDate__date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+                                        {{ day.invoice_count }}
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <strong>
+                                            {{ day.sales_amount }}
+                                        </strong>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-4 text-muted">
+
+                    No sales found for this month.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- SALES DETAILS -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Sales Transactions
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            {% if sales %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    Invoice
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Customer
+                                </th>
+
+                                <th class="text-end">
+                                    Amount
+                                </th>
+
+                                <th class="text-center">
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for sale in sales %}
+
+                                <tr>
+
+                                    <td>
+                                        #{{ sale.SaleId }}
+                                    </td>
+
+                                    <td>
+                                        {{ sale.SaleDate|date:"d M Y, h:i A" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if sale.Customer %}
+
+                                            {{ sale.Customer.Name }}
+
+                                        {% else %}
+
+                                            Walk-in Customer
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <strong>
+                                            {{ sale.TotalAmount }}
+                                        </strong>
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <a href="{% url 'inventory:sale_invoice' sale.SaleId %}"
+                                           target="_blank"
+                                           class="btn btn-sm btn-success">
+
+                                            <i class="bi bi-printer"></i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-4 text-muted">
+
+                    No sales found.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

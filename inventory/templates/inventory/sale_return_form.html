@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="mb-4">
+
+        <h2>
+            Process Return
+        </h2>
+
+        <p class="text-muted">
+            Select the products and quantities being returned.
+        </p>
+
+    </div>
+
+
+    {% if error %}
+
+    <div class="alert alert-danger">
+
+        <i class="bi bi-exclamation-triangle"></i>
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- SALE INFORMATION -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Sale Information
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <strong>
+                        Invoice #
+                    </strong>
+
+                    <div>
+                        {{ sale.SaleId }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <strong>
+                        Customer
+                    </strong>
+
+                    <div>
+                        {{ sale.Customer.Name }}
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <strong>
+                        Sale Date
+                    </strong>
+
+                    <div>
+                        {{ sale.SaleDate|date:"d M Y, h:i A" }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RETURN FORM -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+                    Products to Return
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered align-middle">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>
+                                    Product
+                                </th>
+
+                                <th class="text-center">
+                                    Sold
+                                </th>
+
+                                <th class="text-center">
+                                    Already Returned
+                                </th>
+
+                                <th class="text-center">
+                                    Available for Return
+                                </th>
+
+                                <th class="text-center">
+                                    Return Quantity
+                                </th>
+
+                                <th class="text-end">
+                                    Refund
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for item in return_data %}
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        {{ item.detail.Product.Name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td class="text-center">
+
+                                    {{ item.sold_quantity }}
+
+                                </td>
+
+
+                                <td class="text-center">
+
+                                    {{ item.returned_quantity }}
+
+                                </td>
+
+
+                                <td class="text-center">
+
+                                    {% if item.remaining_quantity > 0 %}
+
+                                        <span class="badge bg-success">
+
+                                            {{ item.remaining_quantity }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+
+                                            0
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td style="width: 160px;">
+
+                                    {% if item.remaining_quantity > 0 %}
+
+                                    <input
+                                        type="number"
+                                        name="quantity_{{ item.detail.SaleDetailId }}"
+                                        class="form-control return-quantity"
+                                        min="0"
+                                        max="{{ item.remaining_quantity }}"
+                                        value="0"
+                                        data-price="{{ item.selling_price }}"
+                                    >
+
+                                    {% else %}
+
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        value="0"
+                                        disabled
+                                    >
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <span class="refund-amount">
+                                        0.00
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center text-muted py-4"
+                                >
+
+                                    No products found for this sale.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+
+                        <tfoot>
+
+                            <tr>
+
+                                <th colspan="5"
+                                    class="text-end">
+
+                                    Total Refund
+
+                                </th>
+
+                                <th class="text-end">
+
+                                    <span id="total-refund">
+                                        0.00
+                                    </span>
+
+                                </th>
+
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+
+                <!-- REMARKS -->
+
+                <div class="mt-4">
+
+                    <label
+                        for="Remarks"
+                        class="form-label fw-bold"
+                    >
+
+                        Return Remarks
+
+                    </label>
+
+                    <textarea
+                        name="Remarks"
+                        id="Remarks"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Enter return reason or remarks..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="mt-4">
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger"
+                    >
+
+                        <i class="bi bi-arrow-return-left"></i>
+
+                        Process Return
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'inventory:sale_detail' sale.SaleId %}"
+                        class="btn btn-secondary ms-2"
+                    >
+
+                        <i class="bi bi-arrow-left"></i>
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        const quantityInputs =
+            document.querySelectorAll(
+                '.return-quantity'
+            );
+
+        const totalRefund =
+            document.getElementById(
+                'total-refund'
+            );
+
+
+        function calculateRefunds() {
+
+            let total = 0;
+
+
+            quantityInputs.forEach(
+                function (input) {
+
+                    const quantity =
+                        parseInt(
+                            input.value
+                        ) || 0;
+
+                    const price =
+                        parseFloat(
+                            input.dataset.price
+                        ) || 0;
+
+                    const refund =
+                        quantity * price;
+
+
+                    const row =
+                        input.closest('tr');
+
+                    const refundElement =
+                        row.querySelector(
+                            '.refund-amount'
+                        );
+
+
+                    refundElement.textContent =
+                        refund.toFixed(2);
+
+
+                    total += refund;
+
+                }
+            );
+
+
+            totalRefund.textContent =
+                total.toFixed(2);
+
+        }
+
+
+        quantityInputs.forEach(
+            function (input) {
+
+                input.addEventListener(
+                    'input',
+                    calculateRefunds
+                );
+
+            }
+        );
+
+
+        calculateRefunds();
+
+    }
+);
+
+</script>
+
+{% endblock %}

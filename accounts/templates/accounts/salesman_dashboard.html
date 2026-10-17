@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Salesman Dashboard
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* =========================================================
+       SALESMAN DASHBOARD
+    ========================================================= */
+
+    .salesman-dashboard {
+
+        background-color: #f4f6f9;
+
+        min-height: calc(100vh - 70px);
+
+        padding: 30px;
+
+        width: 100%;
+
+        overflow-x: hidden;
+
+    }
+
+
+    /* =========================================================
+       DASHBOARD CARDS
+    ========================================================= */
+
+    .dashboard-card {
+
+        border: none;
+
+        border-radius: 12px;
+
+        transition: 0.2s;
+
+        overflow: hidden;
+
+    }
+
+
+    .dashboard-card:hover {
+
+        transform: translateY(-3px);
+
+    }
+
+
+    /* =========================================================
+       CARD BODY
+    ========================================================= */
+
+    .dashboard-card .card-body {
+
+        padding: 25px;
+
+    }
+
+
+    /* =========================================================
+       CARD HEADING
+    ========================================================= */
+
+    .dashboard-card h4 {
+
+        font-size: 22px;
+
+        font-weight: 600;
+
+        margin-bottom: 12px;
+
+    }
+
+
+    /* =========================================================
+       CARD DESCRIPTION
+    ========================================================= */
+
+    .dashboard-card p {
+
+        font-size: 14px;
+
+        line-height: 1.5;
+
+    }
+
+
+    /* =========================================================
+       BUTTONS
+    ========================================================= */
+
+    .salesman-dashboard .btn {
+
+        white-space: nowrap;
+
+    }
+
+
+    /* =========================================================
+       MEDIUM SCREENS
+    ========================================================= */
+
+    @media (max-width: 992px) {
+
+        .salesman-dashboard {
+
+            padding: 25px;
+
+        }
+
+
+        .dashboard-card .card-body {
+
+            padding: 22px;
+
+        }
+
+
+        .dashboard-card h4 {
+
+            font-size: 21px;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       TABLET
+    ========================================================= */
+
+    @media (max-width: 768px) {
+
+        .salesman-dashboard {
+
+            padding: 20px 15px;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 h2 {
+
+            font-size: 25px;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 p {
+
+            font-size: 14px;
+
+        }
+
+
+        .dashboard-card .card-body {
+
+            padding: 20px;
+
+        }
+
+
+        .dashboard-card h4 {
+
+            font-size: 20px;
+
+        }
+
+
+        .dashboard-card p {
+
+            font-size: 14px;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 576px) {
+
+        .salesman-dashboard {
+
+            padding: 15px 10px;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 {
+
+            margin-bottom: 20px !important;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 h2 {
+
+            font-size: 22px;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 p {
+
+            font-size: 13px;
+
+        }
+
+
+        .dashboard-card .card-body {
+
+            padding: 16px;
+
+        }
+
+
+        .dashboard-card h4 {
+
+            font-size: 18px;
+
+        }
+
+
+        .dashboard-card p {
+
+            font-size: 13px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .salesman-dashboard .btn {
+
+            width: 100%;
+
+            font-size: 14px;
+
+            padding: 9px 12px;
+
+        }
+
+
+        .salesman-dashboard .row {
+
+            --bs-gutter-y: 15px;
+
+        }
+
+    }
+
+
+    /* =========================================================
+       VERY SMALL MOBILE
+    ========================================================= */
+
+    @media (max-width: 400px) {
+
+        .salesman-dashboard {
+
+            padding: 12px 8px;
+
+        }
+
+
+        .salesman-dashboard > .mb-4 h2 {
+
+            font-size: 20px;
+
+        }
+
+
+        .dashboard-card .card-body {
+
+            padding: 14px;
+
+        }
+
+
+        .dashboard-card h4 {
+
+            font-size: 17px;
+
+        }
+
+
+        .dashboard-card p {
+
+            font-size: 12px;
+
+        }
+
+
+        .salesman-dashboard .btn {
+
+            font-size: 13px;
+
+            padding: 8px 10px;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="salesman-dashboard">
+
+
+    <!-- =====================================================
+         DASHBOARD HEADER
+    ===================================================== -->
+
+    <div class="mb-4">
+
+        <h2>
+            Welcome, {{ request.user.username }}
+        </h2>
+
+        <p class="text-muted">
+            Salesman Control Panel
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         DASHBOARD CARDS
+    ===================================================== -->
+
+    <div class="row g-3 g-md-4 mt-1">
+
+
+        <!-- =================================================
+             PRODUCTS
+        ================================================= -->
+
+        <div class="col-md-6">
+
+            <div class="card dashboard-card shadow h-100">
+
+                <div class="card-body">
+
+                    <h4>
+                        📦 Products
+                    </h4>
+
+                    <p class="text-muted">
+                        View available products.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:product_list' %}"
+                        class="btn btn-primary">
+
+                        View Products
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             SALES
+        ================================================= -->
+
+        <div class="col-md-6">
+
+            <div class="card dashboard-card shadow h-100">
+
+                <div class="card-body">
+
+                    <h4>
+                        🛒 Sales
+                    </h4>
+
+                    <p class="text-muted">
+                        View all sales and create new sales.
+                    </p>
+
+                    <a
+                        href="{% url 'inventory:sale_list' %}"
+                        class="btn btn-success">
+
+                        View Sales
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}

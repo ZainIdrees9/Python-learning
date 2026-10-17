@@ -1,0 +1,694 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Sale{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main page */
+    .create-sale-page {
+        font-size: 0.9rem;
+        color: #334155;
+    }
+
+    /* Page heading */
+    .create-sale-page .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .create-sale-page .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #172554;
+        margin-bottom: 4px;
+    }
+
+    .create-sale-page .page-header p {
+        font-size: 0.88rem;
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    /* Cards */
+    .create-sale-page .card {
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.05);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .create-sale-page .card-header {
+        background: #f8fafc;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #172554;
+    }
+
+    .create-sale-page .card-body {
+        padding: 15px;
+    }
+
+    /* Labels */
+    .create-sale-page label,
+    .create-sale-page .form-label {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 5px;
+    }
+
+    /* Inputs and dropdowns */
+    .create-sale-page .form-control,
+    .create-sale-page .form-select {
+        width: 100%;
+        min-height: 37px;
+        padding: 7px 10px;
+        font-size: 0.9rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        box-shadow: none;
+    }
+
+    .create-sale-page .form-control:focus,
+    .create-sale-page .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* Remarks textarea */
+    .create-sale-page textarea.form-control {
+        height: 65px;
+        min-height: 65px;
+        resize: vertical;
+    }
+
+    /* Product rows */
+    .create-sale-page .product-form {
+        position: relative;
+        padding: 12px;
+        margin-bottom: 11px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    .create-sale-page .product-form:last-child {
+        margin-bottom: 0;
+    }
+
+    .create-sale-page .product-form .row {
+        row-gap: 10px;
+    }
+
+    /* Selling price field */
+    .create-sale-page .selling-price {
+        background-color: #f8fafc;
+    }
+
+    /* Buttons */
+    .create-sale-page .btn {
+        font-size: 0.88rem;
+        font-weight: 500;
+        padding: 7px 13px;
+        border-radius: 6px;
+    }
+
+    .create-sale-page .btn-primary {
+        background-color: #2563eb;
+        border-color: #2563eb;
+    }
+
+    .create-sale-page .btn-primary:hover {
+        background-color: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+
+    .create-sale-page .btn-secondary {
+        background-color: #64748b;
+        border-color: #64748b;
+    }
+
+    .create-sale-page .btn-outline-secondary {
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+    .create-sale-page .btn-outline-secondary:hover {
+        background-color: #f1f5f9;
+    }
+
+    .create-sale-page .btn-danger {
+        padding: 6px 10px;
+    }
+
+    /* Delete checkbox */
+    .create-sale-page .delete-field {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 7px;
+    }
+
+    .create-sale-page .delete-field label {
+        margin: 0;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .create-sale-page input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
+
+    /* Error messages */
+    .create-sale-page .alert {
+        font-size: 0.88rem;
+        padding: 10px 14px;
+        border-radius: 7px;
+    }
+
+    .create-sale-page .text-danger,
+    .create-sale-page .invalid-feedback,
+    .create-sale-page .errorlist {
+        font-size: 0.82rem;
+    }
+
+    .create-sale-page .errorlist {
+        color: #dc2626;
+        padding-left: 18px;
+        margin: 4px 0;
+    }
+
+    /* Form action buttons */
+    .create-sale-page .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 16px;
+    }
+
+    /* Tablet and mobile */
+    @media (max-width: 767.98px) {
+        .create-sale-page {
+            padding: 10px;
+        }
+
+        .create-sale-page .page-header h1 {
+            font-size: 1.35rem;
+        }
+
+        .create-sale-page .card-body {
+            padding: 12px;
+        }
+
+        .create-sale-page .product-form {
+            padding: 10px;
+        }
+
+        .create-sale-page .form-actions {
+            justify-content: stretch;
+        }
+
+        .create-sale-page .form-actions .btn {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .create-sale-page .page-header h1 {
+            font-size: 1.25rem;
+        }
+
+        .create-sale-page .form-control,
+        .create-sale-page .form-select {
+            min-height: 36px;
+            font-size: 0.88rem;
+        }
+
+        .create-sale-page .btn {
+            font-size: 0.85rem;
+            padding: 7px 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid create-sale-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Create Sale</h1>
+            <p>Create a new sales transaction and add the required products.</p>
+        </div>
+
+        <a href="{% url 'inventory:sale_list' %}"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Sales
+        </a>
+    </div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                 role="alert">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Sale Form -->
+    <form method="POST" id="saleForm">
+        {% csrf_token %}
+
+        <!-- Sale Information -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-receipt me-2"></i>
+                Sale Information
+            </div>
+
+            <div class="card-body">
+
+                {% if sale_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ sale_form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+
+                    <!-- Customer -->
+                    <div class="col-12 col-md-6">
+                        <label for="{{ sale_form.Customer.id_for_label }}"
+                               class="form-label">
+                            Customer
+                        </label>
+
+                        {{ sale_form.Customer }}
+
+                        {% if sale_form.Customer.errors %}
+                            <div class="text-danger mt-1">
+                                {{ sale_form.Customer.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="col-12 col-md-6">
+                        <label for="{{ sale_form.Remarks.id_for_label }}"
+                               class="form-label">
+                            Remarks
+                        </label>
+
+                        {{ sale_form.Remarks }}
+
+                        {% if sale_form.Remarks.errors %}
+                            <div class="text-danger mt-1">
+                                {{ sale_form.Remarks.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Sale Products -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span>
+                    <i class="bi bi-box-seam me-2"></i>
+                    Sale Products
+                </span>
+
+                <button type="button"
+                        id="addProductBtn"
+                        class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Add Product
+                </button>
+            </div>
+
+            <div class="card-body">
+
+                {% if detail_formset.non_form_errors %}
+                    <div class="alert alert-danger">
+                        {{ detail_formset.non_form_errors }}
+                    </div>
+                {% endif %}
+
+                {{ detail_formset.management_form }}
+
+                <div id="productForms">
+
+                    {% for detail_form in detail_formset %}
+                        <div class="product-form">
+
+                            {% for hidden in detail_form.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+
+                            {% if detail_form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {{ detail_form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            <div class="row align-items-end">
+
+                                <!-- Product -->
+                                <div class="col-12 col-md-5">
+                                    <label for="{{ detail_form.Product.id_for_label }}"
+                                           class="form-label">
+                                        Product
+                                    </label>
+
+                                    {{ detail_form.Product }}
+
+                                    {% if detail_form.Product.errors %}
+                                        <div class="text-danger mt-1">
+                                            {{ detail_form.Product.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Quantity -->
+                                <div class="col-12 col-md-2">
+                                    <label for="{{ detail_form.Quantity.id_for_label }}"
+                                           class="form-label">
+                                        Quantity
+                                    </label>
+
+                                    {{ detail_form.Quantity }}
+
+                                    {% if detail_form.Quantity.errors %}
+                                        <div class="text-danger mt-1">
+                                            {{ detail_form.Quantity.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Selling Price -->
+                                <div class="col-12 col-md-3">
+                                    <label for="{{ detail_form.SellingPrice.id_for_label }}"
+                                           class="form-label">
+                                        Selling Price
+                                    </label>
+
+                                    {{ detail_form.SellingPrice }}
+
+                                    {% if detail_form.SellingPrice.errors %}
+                                        <div class="text-danger mt-1">
+                                            {{ detail_form.SellingPrice.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Remove Product -->
+                                <div class="col-12 col-md-2">
+                                    <button type="button"
+                                            class="btn btn-danger remove-product-btn w-100">
+                                        <i class="bi bi-trash me-1"></i>
+                                        Remove
+                                    </button>
+
+                                    {% if detail_form.DELETE %}
+                                        <div class="delete-field d-none">
+                                            {{ detail_form.DELETE }}
+                                            <label for="{{ detail_form.DELETE.id_for_label }}">
+                                                Delete
+                                            </label>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <!-- Django Empty Form Template -->
+                <div id="emptyProductForm" class="d-none">
+                    <div class="product-form">
+
+                        {% for hidden in detail_formset.empty_form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        <div class="row align-items-end">
+
+                            <div class="col-12 col-md-5">
+                                <label for="{{ detail_formset.empty_form.Product.id_for_label }}"
+                                       class="form-label">
+                                    Product
+                                </label>
+
+                                {{ detail_formset.empty_form.Product }}
+                            </div>
+
+                            <div class="col-12 col-md-2">
+                                <label for="{{ detail_formset.empty_form.Quantity.id_for_label }}"
+                                       class="form-label">
+                                    Quantity
+                                </label>
+
+                                {{ detail_formset.empty_form.Quantity }}
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <label for="{{ detail_formset.empty_form.SellingPrice.id_for_label }}"
+                                       class="form-label">
+                                    Selling Price
+                                </label>
+
+                                {{ detail_formset.empty_form.SellingPrice }}
+                            </div>
+
+                            <div class="col-12 col-md-2">
+                                <button type="button"
+                                        class="btn btn-danger remove-product-btn w-100">
+                                    <i class="bi bi-trash me-1"></i>
+                                    Remove
+                                </button>
+
+                                {% if detail_formset.empty_form.DELETE %}
+                                    <div class="delete-field d-none">
+                                        {{ detail_formset.empty_form.DELETE }}
+                                        <label for="{{ detail_formset.empty_form.DELETE.id_for_label }}">
+                                            Delete
+                                        </label>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sale Form Errors -->
+        {% if sale_form.errors %}
+            <div class="alert alert-danger">
+                <strong>Please correct the following sale information errors.</strong>
+                {{ sale_form.errors }}
+            </div>
+        {% endif %}
+
+        <!-- Product Formset Errors -->
+        {% if detail_formset.errors %}
+            <div class="alert alert-danger">
+                <strong>Please correct the errors in the product rows.</strong>
+
+                {% for form_errors in detail_formset.errors %}
+                    {% if form_errors %}
+                        <div>{{ form_errors }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <a href="{% url 'inventory:sale_list' %}"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>
+                Save Sale
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const productForms = document.getElementById("productForms");
+    const addProductBtn = document.getElementById("addProductBtn");
+    const totalFormsInput = document.getElementById("id_details-TOTAL_FORMS");
+    const emptyProductForm = document.getElementById("emptyProductForm");
+
+    const priceUrl = "{% url 'inventory:product_price' %}";
+
+    /*
+     * Fetch the selected product's UnitPrice automatically.
+     */
+    async function fetchProductPrice(productSelect) {
+        const productRow = productSelect.closest(".product-form");
+
+        if (!productRow) {
+            return;
+        }
+
+        const priceInput = productRow.querySelector(
+            'input[name$="-SellingPrice"]'
+        );
+
+        if (!priceInput) {
+            return;
+        }
+
+        const productId = productSelect.value;
+
+        if (!productId) {
+            priceInput.value = "";
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${priceUrl}?product_id=${encodeURIComponent(productId)}`,
+                {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to retrieve product price.");
+            }
+
+            const data = await response.json();
+
+            if (data.success && data.price !== undefined) {
+                priceInput.value = data.price;
+            } else if (data.price !== undefined) {
+                priceInput.value = data.price;
+            } else {
+                priceInput.value = "";
+            }
+        } catch (error) {
+            console.error("Product price error:", error);
+        }
+    }
+
+    /*
+     * Handle product selection for existing and newly added rows.
+     */
+    productForms.addEventListener("change", function (event) {
+        if (event.target.matches('select[name$="-Product"]')) {
+            fetchProductPrice(event.target);
+        }
+    });
+
+    /*
+     * Add a new row using Django's empty_form.
+     */
+    addProductBtn.addEventListener("click", function () {
+        const formIndex = parseInt(totalFormsInput.value, 10);
+
+        const newFormHtml = emptyProductForm.innerHTML.replace(
+            /__prefix__/g,
+            formIndex
+        );
+
+        const temporaryContainer = document.createElement("div");
+        temporaryContainer.innerHTML = newFormHtml.trim();
+
+        const newProductRow = temporaryContainer.firstElementChild;
+
+        productForms.appendChild(newProductRow);
+
+        totalFormsInput.value = formIndex + 1;
+
+        const productSelect = newProductRow.querySelector(
+            'select[name$="-Product"]'
+        );
+
+        if (productSelect) {
+            productSelect.focus();
+        }
+    });
+
+    /*
+     * Remove a row. Existing database-backed forms are marked for deletion;
+     * newly added forms are removed from the page.
+     */
+    productForms.addEventListener("click", function (event) {
+        const removeButton = event.target.closest(".remove-product-btn");
+
+        if (!removeButton) {
+            return;
+        }
+
+        const productRow = removeButton.closest(".product-form");
+
+        if (!productRow) {
+            return;
+        }
+
+        const deleteInput = productRow.querySelector(
+            'input[name$="-DELETE"]'
+        );
+
+        const idInput = productRow.querySelector(
+            'input[name$="-id"]'
+        );
+
+        if (deleteInput && idInput && idInput.value) {
+            deleteInput.checked = true;
+            productRow.classList.add("d-none");
+        } else {
+            productRow.remove();
+        }
+    });
+
+    /*
+     * Populate prices for products already selected on page load.
+     */
+    productForms.querySelectorAll('select[name$="-Product"]').forEach(
+        function (productSelect) {
+            if (productSelect.value) {
+                fetchProductPrice(productSelect);
+            }
+        }
+    );
+});
+</script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+
+        <h2>
+            Return History
+        </h2>
+
+        <p class="text-muted">
+            View all processed product returns.
+        </p>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                Sales Return History
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>
+                                Return #
+                            </th>
+
+                            <th>
+                                Invoice #
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Return Date
+                            </th>
+
+                            <th class="text-center">
+                                Products
+                            </th>
+
+                            <th class="text-end">
+                                Refund
+                            </th>
+
+                            <th class="text-center">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for return in returns %}
+
+                        <tr>
+
+                            <td>
+
+                                <strong>
+                                    #{{ return.ReturnId }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                #{{ return.Sale.SaleId }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ return.Sale.Customer.Name }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ return.ReturnDate|date:"d M Y, h:i A" }}
+
+                            </td>
+
+
+                            <td class="text-center">
+
+                                {{ return.details.count }}
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                {{ return.TotalAmount }}
+
+                            </td>
+
+
+                            <td class="text-center">
+
+                                <a
+                                    href="{% url 'inventory:sale_return_detail' return.ReturnId %}"
+                                    class="btn btn-sm btn-primary"
+                                >
+
+                                    <i class="bi bi-eye"></i>
+
+                                    View
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="text-center text-muted py-4"
+                            >
+
+                                No return records available.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,409 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- INVOICE -->
+    <div class="card shadow-sm">
+
+        <div class="card-body p-5">
+
+
+            <!-- INVOICE HEADER -->
+            <div class="row align-items-start mb-4">
+
+                <!-- STORE -->
+                <div class="col-6">
+
+                    <h2 class="fw-bold mb-1">
+                        YOUR STORE
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Sales Invoice
+                    </p>
+
+                </div>
+
+
+                <!-- INVOICE DETAILS -->
+                <div class="col-6 text-end">
+
+                    <h3 class="fw-bold">
+                        INVOICE
+                    </h3>
+
+                    <p class="mb-1">
+
+                        <strong>
+                            Invoice #:
+                        </strong>
+
+                        {{ sale.SaleId }}
+
+                    </p>
+
+
+                    <p class="mb-0">
+
+                        <strong>
+                            Date:
+                        </strong>
+
+                        {{ sale.SaleDate|date:"d M Y, h:i A" }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- CUSTOMER INFORMATION -->
+            <div class="row my-4">
+
+                <!-- BILL TO -->
+                <div class="col-6">
+
+                    <h6 class="fw-bold">
+                        Bill To
+                    </h6>
+
+
+                    {% if sale.Customer %}
+
+                        <p class="mb-1">
+
+                            <strong>
+                                {{ sale.Customer.Name }}
+                            </strong>
+
+                        </p>
+
+
+                        {% if sale.Customer.Phone %}
+
+                            <p class="mb-1">
+
+                                {{ sale.Customer.Phone }}
+
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if sale.Customer.Email %}
+
+                            <p class="mb-1">
+
+                                {{ sale.Customer.Email }}
+
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if sale.Customer.Address %}
+
+                            <p class="mb-0">
+
+                                {{ sale.Customer.Address }}
+
+                            </p>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <p>
+                            Walk-in Customer
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- INVOICE NUMBER -->
+                <div class="col-6 text-end">
+
+                    <h6 class="fw-bold">
+                        Invoice Information
+                    </h6>
+
+                    <p class="mb-1">
+
+                        Invoice:
+                        #{{ sale.SaleId }}
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        Date:
+                        {{ sale.SaleDate|date:"d M Y, h:i A" }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCTS TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-bordered align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th style="width: 50px;">
+                                #
+                            </th>
+
+                            <th>
+                                Product
+                            </th>
+
+                            <th class="text-center">
+                                Quantity
+                            </th>
+
+                            <th class="text-end">
+                                Unit Price
+                            </th>
+
+                            <th class="text-end">
+                                Total
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for detail in sale.details.all %}
+
+                            <tr>
+
+                                <!-- NUMBER -->
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <!-- PRODUCT -->
+                                <td>
+
+                                    {{ detail.Product.Name }}
+
+                                </td>
+
+
+                                <!-- QUANTITY -->
+                                <td class="text-center">
+
+                                    {{ detail.Quantity }}
+
+                                </td>
+
+
+                                <!-- PRICE -->
+                                <td class="text-end">
+
+                                    {{ detail.SellingPrice }}
+
+                                </td>
+
+
+                                <!-- TOTAL -->
+                                <td class="text-end">
+
+                                    {{ detail.Total }}
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="5"
+                                    class="text-center">
+
+                                    No products found.
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+
+                    <!-- TOTAL -->
+                    <tfoot>
+
+                        <tr>
+
+                            <th colspan="4"
+                                class="text-end">
+
+                                Grand Total
+
+                            </th>
+
+                            <th class="text-end fs-5">
+
+                                {{ sale.TotalAmount }}
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+
+            <!-- REMARKS -->
+            {% if sale.Remarks %}
+
+                <div class="mt-4">
+
+                    <h6 class="fw-bold">
+                        Remarks
+                    </h6>
+
+                    <p>
+                        {{ sale.Remarks }}
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- FOOTER -->
+            <div class="row mt-5">
+
+                <div class="col-6">
+
+                    <p class="mb-1">
+                        Thank you for your business!
+                    </p>
+
+                    <small class="text-muted">
+                        Please keep this invoice for your records.
+                    </small>
+
+                </div>
+
+
+                <div class="col-6 text-end">
+
+                    <strong>
+                        Total: {{ sale.TotalAmount }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+            <div class="text-center mt-5 no-print">
+
+                <button type="button"
+                        onclick="window.print()"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-printer"></i>
+                    Print Invoice
+
+                </button>
+
+                 <!-- DOWNLOAD INVOICE -->
+
+                <a
+                     href="{% url 'inventory:sale_invoice_download' sale.SaleId %}"
+                    class="btn btn-success ms-2">
+
+                    <i class="bi bi-download"></i>
+
+                    Download Invoice
+
+                </a>
+                
+                <a href="{% url 'inventory:sale_detail' sale.SaleId %}"
+                   class="btn btn-secondary ms-2">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Sale
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PRINT CSS -->
+<style>
+
+@media print {
+
+    body {
+        background: #ffffff !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .navbar,
+    .sidebar,
+    footer {
+        display: none !important;
+    }
+
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .card-body {
+        padding: 0 !important;
+    }
+
+    table {
+        width: 100% !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}
