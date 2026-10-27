@@ -1,443 +1,1308 @@
-{% extends 'base.html' %}
-{% load static %}
 
-{% block title %}
-Manager Dashboard
-{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard{% endblock %}
 
 {% block extra_css %}
-
 <style>
-    /* =========================================================
-       MANAGER DASHBOARD
-    ========================================================= */
+    :root {
+        --manager-primary: #25397c;
+        --manager-indigo: #4f46e5;
+        --manager-purple: #7c3aed;
+        --manager-green: #059669;
+        --manager-teal: #0d9488;
+        --manager-border: #e4e8f0;
+        --manager-muted: #748297;
+        --manager-text: #27364b;
+    }
 
     .manager-dashboard {
-        background-color: #f4f6f9;
-        min-height: calc(100vh - 64px);
-        padding: 25px;
         width: 100%;
-        max-width: none;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 12px 14px;
+        color: var(--manager-text);
         box-sizing: border-box;
-        overflow-x: hidden;
     }
 
-    /* Dashboard cards */
-    .manager-dashboard .dashboard-card {
-        border: none;
-        border-radius: 12px;
-        transition: transform 0.2s ease;
-        overflow: hidden;
+    .manager-dashboard *,
+    .manager-dashboard *::before,
+    .manager-dashboard *::after {
+        box-sizing: border-box;
     }
 
-    .manager-dashboard .dashboard-card:hover {
-        transform: translateY(-3px);
+    @keyframes managerFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    /* Card body */
-    .manager-dashboard .dashboard-card .card-body {
-        padding: 22px;
+    @keyframes managerModalAppear {
+        from {
+            opacity: 0;
+            transform: translateY(8px) scale(.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
-    /* Card titles */
-    .manager-dashboard .card-title {
+    /* Welcome header */
+    .manager-welcome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        animation: managerFadeIn .6s ease both;
+    }
+
+    .manager-welcome h2 {
+        margin: 0;
+        color: #172033;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .manager-welcome p {
+        margin: 4px 0 0;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .manager-welcome-date {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        margin-left: auto;
+        padding: 8px 12px;
+        border: 1px solid var(--manager-border);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--manager-primary);
+        font-size: 12px;
         font-weight: 600;
-    }
-
-    .manager-dashboard .dashboard-card h4 {
-        font-size: 21px;
-    }
-
-    .manager-dashboard .dashboard-card p {
-        font-size: 14px;
-    }
-
-    /* Buttons */
-    .manager-dashboard .btn {
         white-space: nowrap;
     }
 
-    /* Action groups */
-    .manager-dashboard .dashboard-actions,
-    .manager-dashboard .inventory-actions,
-    .manager-dashboard .report-actions {
-        display: flex;
+    /* Statistics cards */
+    .manager-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .manager-stat-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 7px;
+        min-width: 0;
+        min-height: 88px;
+        padding: 12px;
+        background: #fff;
+        border: 1px solid #e6eaf1;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(25, 39, 75, .045);
+        animation: managerFadeIn .7s ease both;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .manager-stat-card:nth-child(1) { animation-delay: .05s; }
+    .manager-stat-card:nth-child(2) { animation-delay: .10s; }
+    .manager-stat-card:nth-child(3) { animation-delay: .15s; }
+    .manager-stat-card:nth-child(4) { animation-delay: .20s; }
+
+    .manager-stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(25, 39, 75, .11);
+    }
+
+    .manager-stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 7px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .manager-stat-label {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        color: #000;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    .manager-stat-value {
+        margin: 0;
+        color: #111827;
+        font-size: 21px;
+        font-weight: 750;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .manager-stat-icon {
+        display: flex;
+        flex: 0 0 30px;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: transform .3s ease;
+    }
+
+    .manager-stat-card:hover .manager-stat-icon {
+        transform: scale(1.08) rotate(-4deg);
+    }
+
+    .manager-icon-products {
+        background: #e8edff;
+        color: #4338ca;
+    }
+
+    .manager-icon-stock {
+        background: #fff1df;
+        color: #d68116;
+    }
+
+    .manager-icon-sales {
+        background: #e5f8ef;
+        color: #168653;
+    }
+
+    .manager-icon-revenue {
+        background: #e0f4ff;
+        color: #087eae;
+    }
+
+    /* Chart and content layout */
+    .manager-panels {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+        gap: 14px;
+        margin-bottom: 15px;
+    }
+
+    .manager-panel {
+        min-width: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--manager-border);
+        border-radius: 7px;
+        box-shadow: 0 3px 10px rgba(25, 39, 75, .045);
+        animation: managerFadeIn .8s ease both;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .manager-panels .manager-panel:nth-child(1) {
+        animation-delay: .15s;
+    }
+
+    .manager-panels .manager-panel:nth-child(2) {
+        animation-delay: .25s;
+    }
+
+    .manager-panel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(25, 39, 75, .09);
+    }
+
+    /* Gradient panel headings */
+    .manager-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 14px;
+        color: #fff;
+        background: linear-gradient(100deg, #1e3a8a 0%, #4f46e5 100%);
+    }
+
+    .manager-heading-sales {
+        background: linear-gradient(100deg, #4338ca 0%, #7c3aed 100%);
+    }
+
+    .manager-heading-stock {
+        background: linear-gradient(100deg, #047857 0%, #0d9488 100%);
+    }
+
+    .manager-heading-lowstock {
+        background: linear-gradient(100deg, #ea580c 0%, #e11d48 100%);
+    }
+
+    .manager-heading-recent {
+        background: linear-gradient(100deg, #0e7490 0%, #0d9488 100%);
+    }
+
+    .manager-panel-header h5 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: .15px;
+    }
+
+    .manager-panel-header h5 i {
+        margin-right: 5px;
+    }
+
+    .manager-panel-body {
+        min-width: 0;
+        padding: 12px 14px;
+    }
+
+    /* Monthly sales chart */
+    .manager-chart-container {
+        position: relative;
+        width: 100%;
+        height: 220px;
+    }
+
+    /* Stock movement doughnut chart */
+    .manager-stock-chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 250px;
+        height: 180px;
+        margin: 0 auto;
+    }
+
+    .manager-stock-summary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 8px;
     }
 
-    /* Medium screens */
-    @media (max-width: 992px) {
-        .manager-dashboard {
-            padding: 25px 20px;
+    .manager-summary-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #000;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Stock In / Stock Out legend dots */
+    .manager-legend-dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        flex: 0 0 9px;
+        border-radius: 50%;
+    }
+
+    .manager-dot-in {
+        background: #10b981;
+    }
+
+    .manager-dot-out {
+        background: #f97316;
+    }
+
+    /* Low stock and recent sales */
+    .manager-detail-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 14px;
+        align-items: stretch;
+    }
+
+    .manager-detail-row .manager-panel {
+        margin: 0;
+    }
+
+    .manager-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .manager-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+        vertical-align: middle;
+        font-size: 11px;
+    }
+
+    .manager-table thead th {
+        padding: 9px 10px;
+        background: #f5f7fb;
+        color: #374151;
+        border-bottom: 1px solid #e8ebf2;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .2px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .manager-table tbody td {
+        padding: 8px 10px;
+        color: #384258;
+        border-bottom: 1px solid #edf0f5;
+        vertical-align: middle;
+    }
+
+    .manager-table tbody tr {
+        transition: background .2s ease;
+    }
+
+    .manager-table tbody tr:hover {
+        background: #f9faff;
+    }
+
+    .manager-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .manager-stock-badge {
+        display: inline-block;
+        padding: 3px 7px;
+        border-radius: 20px;
+        background: #fff0d9;
+        color: #a96505;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .manager-stock-badge.out {
+        background: #ffe3e7;
+        color: #b42336;
+    }
+
+    .manager-view-link {
+        color: #fff;
+        font-size: 11px;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .manager-view-link:hover {
+        color: #e0e7ff;
+        text-decoration: underline;
+    }
+
+    .manager-empty {
+        padding: 18px 10px !important;
+        color: #7b8496 !important;
+        text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+        .manager-stats-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .manager-dashboard .dashboard-card .card-body {
-            padding: 20px;
-        }
-
-        .manager-dashboard .dashboard-card h4 {
-            font-size: 20px;
+        .manager-panels {
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
         }
     }
 
-    /* Tablet */
-    @media (max-width: 768px) {
+    @media (max-width: 700px) {
         .manager-dashboard {
-            padding: 20px 15px;
+            padding: 8px;
         }
 
-        .manager-dashboard > .mb-4 h2 {
-            font-size: 25px;
+        .manager-welcome h2 {
+            font-size: 21px;
         }
 
-        .manager-dashboard > .mb-4 p {
-            font-size: 14px;
+        .manager-panels,
+        .manager-detail-row {
+            grid-template-columns: minmax(0, 1fr);
         }
 
-        .manager-dashboard .dashboard-card .card-body {
-            padding: 18px;
+        .manager-chart-container {
+            height: 200px;
         }
 
-        .manager-dashboard .dashboard-card h4 {
+        .manager-stock-chart-container {
+            height: 185px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .manager-welcome {
+            align-items: flex-start;
+        }
+
+        .manager-welcome-date {
+            padding: 7px 8px;
+            font-size: 11px;
+        }
+
+        .manager-stat-card {
+            min-height: 78px;
+            padding: 9px;
+        }
+
+        .manager-stat-label {
+            font-size: 11px;
+        }
+
+        .manager-stat-value {
             font-size: 19px;
         }
 
-        .manager-dashboard .dashboard-actions {
-            width: 100%;
+        .manager-stat-icon {
+            flex-basis: 27px;
+            width: 27px;
+            height: 27px;
+            font-size: 13px;
         }
 
-        .manager-dashboard .dashboard-actions .btn {
-            flex: 1 1 auto;
+        .manager-panel-body {
+            padding: 10px;
+        }
+
+        .manager-table thead th,
+        .manager-table tbody td {
+            padding: 8px;
+            font-size: 10px;
         }
     }
 
-    /* Mobile */
-    @media (max-width: 576px) {
-        .manager-dashboard {
-            padding: 15px 10px;
+    @media (prefers-reduced-motion: reduce) {
+        .manager-welcome,
+        .manager-stat-card,
+        .manager-panel {
+            animation: none;
         }
 
-        .manager-dashboard > .mb-4 {
-            margin-bottom: 20px !important;
-        }
-
-        .manager-dashboard > .mb-4 h2 {
-            font-size: 22px;
-        }
-
-        .manager-dashboard > .mb-4 p {
-            font-size: 13px;
-        }
-
-        .manager-dashboard .dashboard-card .card-body {
-            padding: 15px;
-        }
-
-        .manager-dashboard .dashboard-card h4 {
-            font-size: 18px;
-        }
-
-        .manager-dashboard .dashboard-card p {
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .manager-dashboard .btn {
-            font-size: 14px;
-            padding: 9px 12px;
-        }
-
-        .manager-dashboard .dashboard-actions,
-        .manager-dashboard .inventory-actions,
-        .manager-dashboard .report-actions {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .manager-dashboard .dashboard-actions .btn,
-        .manager-dashboard .inventory-actions .btn,
-        .manager-dashboard .report-actions .btn {
-            width: 100%;
-            white-space: normal;
-        }
-
-        .manager-dashboard .mt-5 {
-            margin-top: 25px !important;
-        }
-
-        .manager-dashboard .mt-4 {
-            margin-top: 20px !important;
-        }
-    }
-
-    /* Very small mobile */
-    @media (max-width: 400px) {
-        .manager-dashboard {
-            padding: 12px 8px;
-        }
-
-        .manager-dashboard > .mb-4 h2 {
-            font-size: 20px;
-        }
-
-        .manager-dashboard .dashboard-card .card-body {
-            padding: 13px;
-        }
-
-        .manager-dashboard .dashboard-card h4 {
-            font-size: 17px;
-        }
-
-        .manager-dashboard .dashboard-card p {
-            font-size: 12px;
-        }
-
-        .manager-dashboard .btn {
-            font-size: 13px;
-            padding: 8px 10px;
+        .manager-stat-card,
+        .manager-stat-icon,
+        .manager-panel {
+            transition: none;
         }
     }
 </style>
-
 {% endblock %}
 
 {% block content %}
-
 <div class="manager-dashboard">
 
-    <!-- DASHBOARD HEADER -->
-    <div class="mb-4">
-        <h2>
-            Welcome, {{ request.user.username }}
-        </h2>
-
-        <p class="text-muted">
-            Manager Control Panel
-        </p>
-    </div>
-
-    
-    <!-- DASHBOARD CARDS -->
-    <div class="row g-3 g-md-4">
-
-        <!-- PRODUCTS -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
-                    
-
-                    <h4 class="card-title">
-                        📦 Products
-                    </h4>
-
-                    <p class="text-muted">
-                        View and manage all products.
-                    </p>
-
-                    <img
-    src="{% static 'images/products.jpg' %}"
-    class="card-img-top"
-    alt="Products"
-    style="height: 200px; object-fit: cover; width: 100%"
->
-
-                    <a
-                        href="{% url 'inventory:product_list' %}"
-                        class="btn btn-primary">
-
-                        View Products
-                    </a>
-
-                </div>
-            </div>
+    <!-- Welcome heading and date -->
+    <header class="manager-welcome">
+        <div>
+            <h2>Welcome, Manager</h2>
+            <p>Here's your business overview.</p>
         </div>
 
-        <!-- INVENTORY -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
+        <div class="manager-welcome-date">
+            <i class="bi bi-calendar3"></i>
+            <span>{{ dashboard_date|date:"d M Y" }}</span>
+        </div>
+    </header>
 
-                    <h4 class="card-title">
-                        📊 Inventory
-                    </h4>
+    <!-- Statistics cards -->
+    <div class="manager-stats-grid">
 
-                    <p class="text-muted">
-                        Add stock and monitor inventory.
-                    </p>
-
-                    <a
-                        href="{% url 'inventory:stock_entry_list' %}"
-                        class="btn btn-success">
-
-                        Manage Inventory
-                    </a>
-
+        <div class="manager-stat-card">
+            <div class="manager-stat-top">
+                <p class="manager-stat-label">Total Products</p>
+                <div class="manager-stat-icon manager-icon-products">
+                    <i class="bi bi-box-seam"></i>
                 </div>
             </div>
+            <p class="manager-stat-value">{{ total_products|default:0 }}</p>
         </div>
 
-        <!-- SALES -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
-
-                    <h4 class="card-title">
-                        🛒 Sales
-                    </h4>
-
-                    <p class="text-muted">
-                        View and manage sales.
-                    </p>
-
-                    <a
-                        href="{% url 'inventory:sale_list' %}"
-                        class="btn btn-warning">
-
-                        Sales
-                    </a>
-
+        <div class="manager-stat-card">
+            <div class="manager-stat-top">
+                <p class="manager-stat-label">Low Stock Products</p>
+                <div class="manager-stat-icon manager-icon-stock">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
             </div>
+            <p class="manager-stat-value">{{ low_stock_count|default:0 }}</p>
+        </div>
+
+        <div class="manager-stat-card">
+            <div class="manager-stat-top">
+                <p class="manager-stat-label">Today's Sales</p>
+                <div class="manager-stat-icon manager-icon-sales">
+                    <i class="bi bi-receipt"></i>
+                </div>
+            </div>
+            <p class="manager-stat-value">{{ today_sales_count|default:0 }}</p>
+        </div>
+
+        <div class="manager-stat-card">
+            <div class="manager-stat-top">
+                <p class="manager-stat-label">Today's Revenue</p>
+                <div class="manager-stat-icon manager-icon-revenue">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+            </div>
+            <p class="manager-stat-value">{{ today_revenue|default:0|floatformat:2 }}</p>
         </div>
 
     </div>
 
-    <!-- INVENTORY MANAGEMENT -->
-    <div class="card dashboard-card shadow mt-5">
-        <div class="card-body">
+    <!-- Monthly sales and stock movement charts -->
+    <div class="manager-panels">
 
-            <h4>
-                📦 Inventory Management
-            </h4>
-
-            <p class="text-muted">
-                Manager can add, edit, delete and view products.
-            </p>
-
-            <div class="inventory-actions">
-
-                <a
-                    href="{% url 'inventory:product_list' %}"
-                    class="btn btn-primary">
-
-                    📦 View All Products
-                </a>
-
-                <a
-                    href="{% url 'inventory:product_create' %}"
-                    class="btn btn-success">
-
-                    ➕ Add New Product
-                </a>
-
-                <a
-                    href="{% url 'inventory:stock_entry_create' %}"
-                    class="btn btn-info">
-
-                    ➕ Add Stock
-                </a>
-
+        <section class="manager-panel">
+            <div class="manager-panel-header manager-heading-sales">
+                <h5>
+                    <i class="bi bi-graph-up"></i>
+                    Monthly Sales Overview
+                </h5>
+                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
             </div>
 
-        </div>
-    </div>
-
-    <!-- QUICK MANAGEMENT -->
-    <div class="row g-3 g-md-4 mt-4">
-
-        <!-- CUSTOMERS -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
-
-                    <h4>
-                        👤 Customers
-                    </h4>
-
-                    <p class="text-muted">
-                        Manage customer records.
-                    </p>
-
-                    <a
-                        href="{% url 'inventory:customer_list' %}"
-                        class="btn btn-outline-primary">
-
-                        View Customers
-                    </a>
-
+            <div class="manager-panel-body">
+                <div class="manager-chart-container">
+                    <canvas
+                        id="managerMonthlySalesChart"
+                        aria-label="Monthly sales overview"
+                        role="img">
+                    </canvas>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- SUPPLIERS -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
-
-                    <h4>
-                        🚚 Suppliers
-                    </h4>
-
-                    <p class="text-muted">
-                        Manage supplier records.
-                    </p>
-
-                    <a
-                        href="{% url 'inventory:supplier_list' %}"
-                        class="btn btn-outline-success">
-
-                        View Suppliers
-                    </a>
-
-                </div>
+        <section class="manager-panel">
+            <div class="manager-panel-header manager-heading-stock">
+                <h5>
+                    <i class="bi bi-pie-chart"></i>
+                    Stock In / Stock Out
+                </h5>
+                <i class="bi bi-boxes" aria-hidden="true"></i>
             </div>
-        </div>
 
-        <!-- REPORTS -->
-        <div class="col-xl-4 col-md-6">
-            <div class="card dashboard-card shadow h-100">
-                <div class="card-body">
+            <div class="manager-panel-body">
+                <div class="manager-stock-chart-container">
+                    <canvas
+                        id="managerStockMovementChart"
+                        aria-label="Stock in and stock out"
+                        role="img">
+                    </canvas>
+                </div>
 
-                    <h4>
-                        📈 Reports
-                    </h4>
-
-                    <p class="text-muted">
-                        View sales and inventory reports.
-                    </p>
-
-                    <div class="report-actions">
-
-                        <a
-                            href="{% url 'inventory:daily_sales_report' %}"
-                            class="btn btn-outline-dark">
-
-                            Daily Sales
-                        </a>
-
-                        <a
-                            href="{% url 'inventory:inventory_report' %}"
-                            class="btn btn-outline-primary">
-
-                            📋 Inventory Report
-                        </a>
-
-                        <a
-                            href="{% url 'inventory:profit_loss_report' %}"
-                            class="btn btn-outline-success">
-
-                            💰 Profit / Loss
-                        </a>
-
+                <div class="manager-stock-summary">
+                    <div class="manager-summary-item">
+                        <span class="manager-legend-dot manager-dot-in"></span>
+                        <span>Stock In: {{ stock_in_total|default:0 }}</span>
                     </div>
 
+                    <div class="manager-summary-item">
+                        <span class="manager-legend-dot manager-dot-out"></span>
+                        <span>Stock Out: {{ stock_out_total|default:0 }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+    </div>
+
+    <!-- Low stock and recent sales -->
+    <div class="manager-detail-row">
+
+        <section class="manager-panel">
+            <div class="manager-panel-header manager-heading-lowstock">
+                <h5>
+                    <i class="bi bi-exclamation-circle"></i>
+                    Low Stock Products
+                </h5>
+                <i class="bi bi-box-seam" aria-hidden="true"></i>
+            </div>
+
+            <div class="manager-table-wrapper">
+                <table class="manager-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Remaining Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in low_stock_products %}
+                        <tr>
+                            <td>{{ product.Name }}</td>
+                            <td>{{ product.CurrentStock }}</td>
+                            <td>
+                                {% if product.CurrentStock <= 0 %}
+                                    <span class="manager-stock-badge out">
+                                        Out of Stock
+                                    </span>
+                                {% else %}
+                                    <span class="manager-stock-badge">
+                                        Low Stock
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="manager-empty">
+                                No low-stock products found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="manager-panel">
+            <div class="manager-panel-header manager-heading-recent">
+                <h5>
+                    <i class="bi bi-clock-history"></i>
+                    Recent Sales
+                </h5>
+
+                <a href="{% url 'inventory:sale_list' %}"
+                   class="manager-view-link">
+                    View All <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="manager-table-wrapper">
+                <table class="manager-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for sale in recent_sales %}
+                        <tr>
+                            <td>
+                                {% if sale.InvoiceNumber %}
+                                    {{ sale.InvoiceNumber }}
+                                {% else %}
+                                    {{ sale.SaleId }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if sale.Customer %}
+                                    {{ sale.Customer.Name }}
+                                {% else %}
+                                    Walk-in
+                                {% endif %}
+                            </td>
+
+                            <td>{{ sale.SaleDate|date:"d M Y" }}</td>
+                            <td>{{ sale.TotalAmount|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="manager-empty">
+                                No recent sales found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
     </div>
 
 </div>
 
+{{ month_labels|json_script:"manager-month-labels" }}
+{{ monthly_sales_values|json_script:"manager-monthly-sales-values" }}
+{{ stock_in_total|default:0|json_script:"manager-stock-in-data" }}
+{{ stock_out_total|default:0|json_script:"manager-stock-out-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    "use strict";
+
+    const reduceMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const COLORS = {
+        indigo: "#4f6bed",
+        violet: "#8b5cf6",
+        pink: "#ec4899",
+        muted: "#748297",
+        grid: "rgba(110, 120, 140, 0.12)",
+        stockIn: "#10b981",
+        stockInHover: "#059669",
+        stockOut: "#f97316",
+        stockOutHover: "#ea580c"
+    };
+
+    function readJson(id, fallback) {
+        const element = document.getElementById(id);
+
+        if (!element) {
+            return fallback;
+        }
+
+        try {
+            return JSON.parse(element.textContent);
+        } catch (error) {
+            console.error("Unable to read chart data:", id, error);
+            return fallback;
+        }
+    }
+
+    function numberValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+    }
+
+    function numberArray(values) {
+        if (!Array.isArray(values)) {
+            return [];
+        }
+
+        return values.map(numberValue);
+    }
+
+    function loadChartJs(callback) {
+        if (window.Chart) {
+            callback();
+            return;
+        }
+
+        const existing = document.querySelector(
+            'script[data-manager-chartjs="true"]'
+        );
+
+        if (existing) {
+            existing.addEventListener("load", callback, { once: true });
+            return;
+        }
+
+        const script = document.createElement("script");
+
+        script.src =
+            "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+
+        script.dataset.managerChartjs = "true";
+        script.onload = callback;
+
+        script.onerror = function () {
+            console.error("Chart.js could not be loaded.");
+        };
+
+        document.head.appendChild(script);
+    }
+
+    function verticalGradient(context, topColor, bottomColor) {
+        const chart = context.chart;
+        const area = chart.chartArea;
+
+        if (!area) {
+            return topColor;
+        }
+
+        const gradient = chart.ctx.createLinearGradient(
+            0,
+            area.top,
+            0,
+            area.bottom
+        );
+
+        gradient.addColorStop(0, topColor);
+        gradient.addColorStop(1, bottomColor);
+
+        return gradient;
+    }
+
+    function horizontalGradient(context) {
+        const chart = context.chart;
+        const area = chart.chartArea;
+
+        if (!area) {
+            return COLORS.violet;
+        }
+
+        const gradient = chart.ctx.createLinearGradient(
+            area.left,
+            0,
+            area.right,
+            0
+        );
+
+        gradient.addColorStop(0, COLORS.indigo);
+        gradient.addColorStop(0.55, COLORS.violet);
+        gradient.addColorStop(1, COLORS.pink);
+
+        return gradient;
+    }
+
+    const lineGlowPlugin = {
+        id: "managerLineGlow",
+
+        beforeDatasetDraw: function (chart) {
+            chart.ctx.save();
+            chart.ctx.shadowColor = "rgba(99, 102, 241, 0.28)";
+            chart.ctx.shadowBlur = 12;
+            chart.ctx.shadowOffsetY = 5;
+        },
+
+        afterDatasetDraw: function (chart) {
+            chart.ctx.restore();
+        }
+    };
+
+    const crosshairPlugin = {
+        id: "managerCrosshair",
+
+        afterDatasetsDraw: function (chart) {
+            const active = chart.tooltip &&
+                chart.tooltip.getActiveElements();
+
+            if (!active || !active.length) {
+                return;
+            }
+
+            const area = chart.chartArea;
+            const x = active[0].element.x;
+            const context = chart.ctx;
+
+            context.save();
+            context.beginPath();
+            context.setLineDash([4, 4]);
+            context.moveTo(x, area.top);
+            context.lineTo(x, area.bottom);
+            context.lineWidth = 1;
+            context.strokeStyle = "rgba(99, 102, 241, 0.45)";
+            context.stroke();
+            context.restore();
+        }
+    };
+
+    function centerTextPlugin(getTotal, caption) {
+        return {
+            id: "managerCenterText",
+
+            afterDatasetsDraw: function (chart) {
+                const meta = chart.getDatasetMeta(0);
+
+                if (!meta || !meta.data.length) {
+                    return;
+                }
+
+                const arc = meta.data[0];
+                const context = chart.ctx;
+
+                context.save();
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+
+                context.fillStyle = "#172033";
+                context.font =
+                    "700 22px 'Segoe UI', Arial, sans-serif";
+
+                context.fillText(
+                    Number(getTotal()).toLocaleString(),
+                    arc.x,
+                    arc.y - 7
+                );
+
+                context.fillStyle = "#7b8496";
+                context.font =
+                    "500 10px 'Segoe UI', Arial, sans-serif";
+
+                context.fillText(
+                    caption,
+                    arc.x,
+                    arc.y + 13
+                );
+
+                context.restore();
+            }
+        };
+    }
+
+    function animationOptions(delay, duration) {
+        if (reduceMotion) {
+            return false;
+        }
+
+        return {
+            duration: duration,
+            easing: "easeOutCubic",
+
+            delay: function (context) {
+                return context.type === "data" &&
+                    context.mode === "default"
+                    ? context.dataIndex * delay
+                    : 0;
+            }
+        };
+    }
+
+    const tooltipOptions = {
+        backgroundColor: "rgba(23, 32, 51, 0.96)",
+        titleColor: "#ffffff",
+        bodyColor: "#e5e9f2",
+        padding: 12,
+        cornerRadius: 9,
+        displayColors: true,
+        boxPadding: 5,
+        titleFont: {
+            size: 12,
+            weight: "600"
+        },
+        bodyFont: {
+            size: 12
+        }
+    };
+
+    function createChartWhenVisible(canvasId, buildConfig) {
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas) {
+            return;
+        }
+
+        function buildChart() {
+            if (!window.Chart) {
+                return;
+            }
+
+            if (canvas.managerChart) {
+                canvas.managerChart.destroy();
+            }
+
+            canvas.managerChart = new Chart(
+                canvas,
+                buildConfig()
+            );
+        }
+
+        if (!("IntersectionObserver" in window)) {
+            buildChart();
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        buildChart();
+                        observer.disconnect();
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+
+        observer.observe(canvas);
+    }
+
+    function initializeCharts() {
+        if (!window.Chart) {
+            return;
+        }
+
+        Chart.defaults.font.family =
+            "'Inter', 'Segoe UI', Arial, sans-serif";
+
+        Chart.defaults.color = "#657087";
+
+        const suppliedLabels = readJson(
+            "manager-month-labels",
+            []
+        );
+
+        const suppliedValues = numberArray(
+            readJson("manager-monthly-sales-values", [])
+        );
+
+        const defaultLabels = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        const monthLabels = Array.isArray(suppliedLabels) &&
+            suppliedLabels.length
+            ? suppliedLabels.map(function (label) {
+                return String(label).slice(0, 3);
+            })
+            : defaultLabels;
+
+        const monthlyValues = monthLabels.map(function (_, index) {
+            return numberValue(suppliedValues[index]);
+        });
+
+        const stockIn = Math.max(
+            0,
+            numberValue(readJson("manager-stock-in-data", 0))
+        );
+
+        const stockOut = Math.max(
+            0,
+            numberValue(readJson("manager-stock-out-data", 0))
+        );
+
+        /* Monthly Sales: animated gradient line chart */
+        createChartWhenVisible(
+            "managerMonthlySalesChart",
+            function () {
+                return {
+                    type: "line",
+
+                    data: {
+                        labels: monthLabels,
+
+                        datasets: [{
+                            label: "Sales",
+                            data: monthlyValues,
+                            borderColor: horizontalGradient,
+
+                            backgroundColor: function (context) {
+                                return verticalGradient(
+                                    context,
+                                    "rgba(99, 102, 241, 0.30)",
+                                    "rgba(139, 92, 246, 0.02)"
+                                );
+                            },
+
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.42,
+                            pointRadius: 0,
+                            pointHoverRadius: 7,
+                            pointHitRadius: 12,
+                            pointBackgroundColor: "#ffffff",
+                            pointBorderColor: COLORS.violet,
+                            pointBorderWidth: 3,
+                            pointHoverBackgroundColor: COLORS.violet,
+                            pointHoverBorderColor: "#ffffff"
+                        }]
+                    },
+
+                    plugins: [
+                        lineGlowPlugin,
+                        crosshairPlugin
+                    ],
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: animationOptions(60, 1500),
+
+                        interaction: {
+                            intersect: false,
+                            mode: "index"
+                        },
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: Object.assign(
+                                {},
+                                tooltipOptions,
+                                {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return " Sales: " +
+                                                numberValue(
+                                                    context.parsed.y
+                                                ).toLocaleString();
+                                        }
+                                    }
+                                }
+                            )
+                        },
+
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+
+                                border: {
+                                    display: false
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+
+                                ticks: {
+                                    precision: 0,
+                                    maxTicksLimit: 5,
+                                    padding: 8,
+                                    font: {
+                                        size: 10
+                                    }
+                                },
+
+                                grid: {
+                                    color: COLORS.grid,
+                                    drawTicks: false
+                                },
+
+                                border: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        );
+
+        /*
+         * Stock In / Stock Out doughnut.
+         * Stock In = green.
+         * Stock Out = orange.
+         * Solid colors ensure the two segments are distinct.
+         */
+        const stockTotal = stockIn + stockOut;
+        const noStockMovement = stockTotal === 0;
+
+        createChartWhenVisible(
+            "managerStockMovementChart",
+            function () {
+                return {
+                    type: "doughnut",
+
+                    data: {
+                        labels: noStockMovement
+                            ? ["No movement"]
+                            : ["Stock In", "Stock Out"],
+
+                        datasets: [{
+                            data: noStockMovement
+                                ? [1]
+                                : [stockIn, stockOut],
+
+                            backgroundColor: noStockMovement
+                                ? ["#e8ebf2"]
+                                : [
+                                    COLORS.stockIn,
+                                    COLORS.stockOut
+                                ],
+
+                            hoverBackgroundColor: noStockMovement
+                                ? ["#e8ebf2"]
+                                : [
+                                    COLORS.stockInHover,
+                                    COLORS.stockOutHover
+                                ],
+
+                            borderColor: "#ffffff",
+                            borderWidth: 3,
+                            borderRadius: noStockMovement ? 0 : 6,
+                            spacing: noStockMovement ? 0 : 4,
+                            hoverOffset: noStockMovement ? 0 : 8
+                        }]
+                    },
+
+                    plugins: [
+                        centerTextPlugin(
+                            function () {
+                                return stockTotal;
+                            },
+                            "Total units"
+                        )
+                    ],
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: "72%",
+
+                        animation: reduceMotion ? false : {
+                            animateRotate: true,
+                            animateScale: true,
+                            duration: 1500,
+                            easing: "easeOutCubic"
+                        },
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: noStockMovement
+                                ? {
+                                    enabled: false
+                                }
+                                : Object.assign(
+                                    {},
+                                    tooltipOptions,
+                                    {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const value = numberValue(
+                                                    context.parsed
+                                                );
+
+                                                const percent = stockTotal
+                                                    ? Math.round(
+                                                        value /
+                                                        stockTotal * 100
+                                                    )
+                                                    : 0;
+
+                                                return " " +
+                                                    context.label + ": " +
+                                                    value.toLocaleString() +
+                                                    " (" + percent + "%)";
+                                            }
+                                        }
+                                    }
+                                )
+                        }
+                    }
+                };
+            }
+        );
+    }
+
+    function initializeDashboard() {
+        loadChartJs(initializeCharts);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initializeDashboard
+        );
+    } else {
+        initializeDashboard();
+    }
+})();
+</script>
 {% endblock %}

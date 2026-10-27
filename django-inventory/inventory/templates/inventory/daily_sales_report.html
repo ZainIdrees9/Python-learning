@@ -1,14 +1,254 @@
 {% extends 'base.html' %}
 
+{% block title %}Daily Sales Report{% endblock %}
+
+{% block extra_css %}
+<style>
+    .daily-report-page {
+        max-width: 1150px;
+        width: 100%;
+        margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 0.95rem;
+    }
+
+    .report-header {
+        gap: 12px;
+    }
+
+    .report-header h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .report-header p {
+        font-size: 0.88rem;
+    }
+
+    .report-navigation {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .report-navigation .btn {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: 500;
+        margin-left: 0 !important;
+        transition: all 0.2s ease;
+    }
+
+    .monthly-report-btn {
+        color: #2563eb;
+        border-color: #2563eb;
+        background-color: #fff;
+    }
+
+    .monthly-report-btn:hover {
+        color: #fff;
+        background-color: #2563eb;
+        border-color: #2563eb;
+    }
+
+    .yearly-report-btn {
+        color: #fff;
+        background-color: #475569;
+        border-color: #475569;
+    }
+
+    .yearly-report-btn:hover {
+        color: #fff;
+        background-color: #334155;
+        border-color: #334155;
+    }
+
+    .report-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        overflow: hidden;
+    }
+
+    .report-card .card-body {
+        padding: 19px;
+    }
+
+    .report-filter {
+        margin-bottom: 18px !important;
+    }
+
+    .report-filter .form-label {
+        font-size: 0.88rem;
+        margin-bottom: 6px;
+    }
+
+    .report-filter .form-control {
+        font-size: 0.9rem;
+        min-height: 39px;
+    }
+
+    .report-filter .btn {
+        font-size: 0.88rem;
+        padding: 9px 14px;
+        min-height: 39px;
+        white-space: nowrap;
+    }
+
+    .summary-row {
+        margin-bottom: 18px !important;
+    }
+
+    .summary-card {
+        height: 100%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .summary-card .card-body {
+        padding: 18px 20px;
+    }
+
+    .summary-label {
+        display: block;
+        color: #64748b;
+        font-size: 0.83rem;
+        margin-bottom: 6px;
+    }
+
+    .summary-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        color: #1e293b;
+    }
+
+    .summary-value.sales-total {
+        color: #15803d;
+    }
+
+    .sales-card-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .sales-card-header h5 {
+        font-size: 1rem;
+        font-weight: 650;
+        color: #1e293b;
+    }
+
+    .sales-table {
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    .sales-table thead th {
+        color: #475569;
+        font-size: 0.81rem;
+        font-weight: 650;
+        white-space: nowrap;
+        padding: 12px 14px;
+        border-bottom-width: 1px;
+    }
+
+    .sales-table tbody td {
+        padding: 12px 14px;
+        vertical-align: middle;
+    }
+
+    .sales-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .sales-table .product-item {
+        margin-bottom: 4px;
+    }
+
+    .sales-table .product-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .sales-table .btn {
+        width: 31px;
+        height: 31px;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        font-size: 0.85rem;
+    }
+
+    .empty-sales {
+        padding: 38px 18px;
+    }
+
+    .empty-sales .empty-icon {
+        font-size: 2.6rem;
+        color: #94a3b8;
+    }
+
+    .empty-sales h5 {
+        font-size: 1.05rem;
+        color: #334155;
+    }
+
+    .empty-sales p {
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        .daily-report-page {
+            max-width: 100%;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .report-header {
+            align-items: flex-start !important;
+            flex-direction: column;
+            margin-bottom: 18px !important;
+        }
+
+        .report-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .report-navigation {
+            width: 100%;
+        }
+
+        .report-navigation .btn {
+            flex: 1;
+        }
+
+        .summary-value {
+            font-size: 1.4rem;
+        }
+
+        .sales-table {
+            min-width: 700px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-4">
+<div class="container-fluid py-3 daily-report-page">
 
     <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 report-header">
 
         <div>
-
             <h2 class="mb-1">
                 Daily Sales Report
             </h2>
@@ -16,41 +256,36 @@
             <p class="text-muted mb-0">
                 Sales summary for {{ report_date|date:"d M Y" }}
             </p>
-
         </div>
 
-        <div>
+        <div class="report-navigation">
 
             <a href="{% url 'inventory:monthly_sales_report' %}"
-               class="btn btn-outline-primary">
-
+               class="btn monthly-report-btn">
+                <i class="bi bi-calendar-month me-1"></i>
                 Monthly Report
-
             </a>
 
             <a href="{% url 'inventory:yearly_sales_report' %}"
-               class="btn btn-outline-primary ms-2">
-
+               class="btn yearly-report-btn">
+                <i class="bi bi-calendar3 me-1"></i>
                 Yearly Report
-
             </a>
 
         </div>
 
     </div>
 
-
     <!-- DATE FILTER -->
-    <div class="card shadow-sm mb-4">
+    <div class="card report-card shadow-sm report-filter">
 
         <div class="card-body">
 
-            <form method="get"
-                  class="row g-3 align-items-end">
+            <form method="get" class="row g-2 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-6">
 
-                    <label class="form-label fw-bold">
+                    <label class="form-label fw-semibold">
                         Select Date
                     </label>
 
@@ -61,14 +296,11 @@
 
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3 col-sm-6">
 
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        <i class="bi bi-search"></i>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search me-1"></i>
                         Generate Report
-
                     </button>
 
                 </div>
@@ -79,21 +311,20 @@
 
     </div>
 
-
     <!-- SUMMARY CARDS -->
-    <div class="row mb-4">
+    <div class="row g-3 summary-row">
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4 col-sm-6">
 
-            <div class="card shadow-sm">
+            <div class="card report-card summary-card shadow-sm">
 
                 <div class="card-body">
 
-                    <small class="text-muted">
+                    <small class="summary-label">
                         Total Invoices
                     </small>
 
-                    <h3 class="fw-bold mb-0">
+                    <h3 class="summary-value">
                         {{ total_invoices }}
                     </h3>
 
@@ -103,18 +334,17 @@
 
         </div>
 
+        <div class="col-md-4 col-sm-6">
 
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow-sm">
+            <div class="card report-card summary-card shadow-sm">
 
                 <div class="card-body">
 
-                    <small class="text-muted">
+                    <small class="summary-label">
                         Items Sold
                     </small>
 
-                    <h3 class="fw-bold mb-0">
+                    <h3 class="summary-value">
                         {{ total_items }}
                     </h3>
 
@@ -124,18 +354,17 @@
 
         </div>
 
+        <div class="col-md-4 col-sm-6">
 
-        <div class="col-md-4 mb-3">
-
-            <div class="card shadow-sm">
+            <div class="card report-card summary-card shadow-sm">
 
                 <div class="card-body">
 
-                    <small class="text-muted">
+                    <small class="summary-label">
                         Total Sales
                     </small>
 
-                    <h3 class="fw-bold text-success mb-0">
+                    <h3 class="summary-value sales-total">
                         {{ total_sales }}
                     </h3>
 
@@ -147,55 +376,35 @@
 
     </div>
 
-
     <!-- SALES TABLE -->
-    <div class="card shadow-sm">
+    <div class="card report-card shadow-sm">
 
-        <div class="card-header bg-white">
+        <div class="card-header bg-white sales-card-header">
 
             <h5 class="mb-0">
-                <i class="bi bi-receipt"></i>
+                <i class="bi bi-receipt me-1 text-primary"></i>
                 Sales for {{ report_date|date:"d M Y" }}
             </h5>
 
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-0">
 
             {% if sales %}
 
                 <div class="table-responsive">
 
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle sales-table">
 
                         <thead class="table-light">
 
                             <tr>
-
-                                <th>
-                                    Invoice
-                                </th>
-
-                                <th>
-                                    Time
-                                </th>
-
-                                <th>
-                                    Customer
-                                </th>
-
-                                <th>
-                                    Products
-                                </th>
-
-                                <th class="text-end">
-                                    Total
-                                </th>
-
-                                <th class="text-center">
-                                    Action
-                                </th>
-
+                                <th>Invoice</th>
+                                <th>Time</th>
+                                <th>Customer</th>
+                                <th>Products</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-center">Action</th>
                             </tr>
 
                         </thead>
@@ -207,7 +416,7 @@
                                 <tr>
 
                                     <td>
-                                        <strong>
+                                        <strong class="text-primary">
                                             #{{ sale.SaleId }}
                                         </strong>
                                     </td>
@@ -236,14 +445,12 @@
 
                                         {% for detail in sale.details.all %}
 
-                                            <div>
-
+                                            <div class="product-item">
                                                 {{ detail.Product.Name }}
 
                                                 <span class="text-muted">
                                                     × {{ detail.Quantity }}
                                                 </span>
-
                                             </div>
 
                                         {% endfor %}
@@ -261,7 +468,9 @@
                                     <td class="text-center">
 
                                         <a href="{% url 'inventory:sale_detail' sale.SaleId %}"
-                                           class="btn btn-sm btn-primary">
+                                           class="btn btn-sm btn-primary"
+                                           title="View Sale"
+                                           aria-label="View sale details">
 
                                             <i class="bi bi-eye"></i>
 
@@ -269,7 +478,9 @@
 
                                         <a href="{% url 'inventory:sale_invoice' sale.SaleId %}"
                                            target="_blank"
-                                           class="btn btn-sm btn-success">
+                                           class="btn btn-sm btn-success"
+                                           title="Print Invoice"
+                                           aria-label="Print invoice">
 
                                             <i class="bi bi-printer"></i>
 
@@ -289,10 +500,9 @@
 
             {% else %}
 
-                <div class="text-center py-5">
+                <div class="text-center empty-sales">
 
-                    <i class="bi bi-receipt"
-                       style="font-size: 3rem;"></i>
+                    <i class="bi bi-receipt empty-icon"></i>
 
                     <h5 class="mt-3">
                         No Sales Found

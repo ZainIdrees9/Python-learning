@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,10 @@
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         rel="stylesheet"
     >
 
@@ -26,7 +31,12 @@
             background-color: #f5f7fb;
             color: #1e293b;
             font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
         }
+
+        /* =========================
+           TOP NAVIGATION
+        ========================= */
 
         .app-navbar {
             position: sticky;
@@ -37,6 +47,11 @@
             box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
         }
 
+        .app-navbar .container-fluid {
+            min-width: 0;
+            gap: 12px;
+        }
+
         .app-navbar .navbar-brand {
             color: #ffffff;
             font-size: 19px;
@@ -44,6 +59,9 @@
             white-space: normal;
             padding-top: 3px;
             padding-bottom: 3px;
+            margin-right: auto;
+            min-width: 0;
+            line-height: 1.3;
         }
 
         .app-navbar .navbar-brand:hover {
@@ -100,7 +118,31 @@
             margin: 5px 0;
         }
 
-        /* Admin sidebar layout */
+        /* Desktop hamburger hidden by default */
+        .mobile-menu-toggle {
+            display: none;
+            flex: 0 0 auto;
+            width: 42px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 7px;
+            background: transparent;
+            color: #ffffff;
+            font-size: 24px;
+        }
+
+        .mobile-menu-toggle:hover,
+        .mobile-menu-toggle:focus {
+            background: #263765;
+            color: #ffffff;
+        }
+
+        /* =========================
+           ADMIN SIDEBAR
+        ========================= */
+
         .admin-layout {
             display: block;
             width: 100%;
@@ -109,21 +151,18 @@
             padding-top: 0;
         }
 
-        /* Fixed admin sidebar */
         .admin-sidebar {
             width: 205px;
             min-width: 205px;
             background-color: #172554;
             padding: 16px 12px;
             margin-top: 0;
-
             position: fixed;
             top: 52px;
             left: 0;
             bottom: 0;
-
             height: auto;
-            overflow: visible;
+            overflow-y: auto;
             z-index: 1020;
         }
 
@@ -135,7 +174,6 @@
             margin: 18px 12px 8px;
         }
 
-        /* Sidebar links */
         .sidebar-link {
             display: block;
             color: #e2e8f0;
@@ -159,7 +197,10 @@
             font-weight: 700;
         }
 
-        /* Main content area beside the fixed sidebar */
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
         .admin-main-content {
             margin-left: 205px;
             width: calc(100% - 205px);
@@ -168,11 +209,6 @@
             box-sizing: border-box;
         }
 
-        /*
-           FIX: Center and limit the Admin Dashboard width.
-           This selector targets the dashboard wrapper directly
-           inside the main content area.
-        */
         .admin-main-content > .dashboard-content-wrapper {
             display: block;
             width: 100%;
@@ -181,7 +217,6 @@
             margin-right: auto;
         }
 
-        /* Keep dashboard cards inside the available width */
         .admin-main-content .dashboard-card {
             width: 100%;
             max-width: 100%;
@@ -202,61 +237,277 @@
             border-radius: 8px;
         }
 
-        @media (max-width: 991.98px) {
-            .app-navbar {
-                padding: 8px 15px;
+        /* =========================
+           MOBILE NAVIGATION DRAWER
+        ========================= */
+
+        .mobile-nav-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            z-index: 1040;
+        }
+
+        .mobile-nav-backdrop.show {
+            display: block;
+        }
+
+        .mobile-nav-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(86vw, 340px);
+            background: #ffffff;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateX(105%);
+            visibility: hidden;
+            transition: transform 0.25s ease, visibility 0.25s ease;
+            box-shadow: -8px 0 25px rgba(15, 23, 42, 0.18);
+        }
+
+        .mobile-nav-drawer.open {
+            transform: translateX(0);
+            visibility: visible;
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 17px 16px;
+            background: #172554;
+            color: #ffffff;
+            flex: 0 0 auto;
+        }
+
+        .mobile-nav-title {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.3;
+            min-width: 0;
+        }
+
+        .mobile-nav-close {
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 23px;
+            flex: 0 0 auto;
+        }
+
+        .mobile-nav-close:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .mobile-nav-content {
+            padding: 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .mobile-nav-section-title {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 12px 10px 6px;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 10px;
+            margin-bottom: 3px;
+            color: #334155;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 7px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .mobile-nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 17px;
+            color: #64748b;
+            flex: 0 0 20px;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link:focus {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .mobile-nav-link.active {
+            background: #e8edff;
+            color: #25397c;
+            font-weight: 700;
+        }
+
+        .mobile-nav-link.active i {
+            color: #25397c;
+        }
+
+        .mobile-nav-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 10px 4px;
+        }
+
+        .mobile-nav-user {
+            padding: 12px 10px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin: 5px 0 10px;
+            color: #334155;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .mobile-nav-user strong {
+            display: block;
+            color: #172554;
+            margin-bottom: 3px;
+        }
+
+        .mobile-nav-logout {
+            color: #b91c1c;
+        }
+
+        .mobile-nav-logout i {
+            color: #b91c1c;
+        }
+
+        body.mobile-nav-open {
+            overflow: hidden;
+        }
+
+        /* =========================
+           WIDE DASHBOARD LAYOUT
+        ========================= */
+
+        @media (min-width: 1200px) {
+            .admin-main-content:has(.dashboard-content-wrapper) {
+                padding: 8px 12px;
             }
 
-            .app-navbar .navbar-collapse {
-                padding-top: 8px;
+            .admin-main-content:has(.dashboard-content-wrapper)
+            > .dashboard-content-wrapper {
+                max-width: none;
+                width: 100%;
+                margin: 0;
             }
 
-            .app-navbar .navbar-nav {
-                align-items: stretch;
+            .admin-main-content:has(.dashboard-content-wrapper)
+            .dashboard-panel-table {
+                max-height: 190px;
+                overflow: auto;
             }
 
-            .app-navbar .nav-link {
-                padding: 7px 12px !important;
-                white-space: normal;
-            }
-
-            .app-navbar .dropdown-menu {
-                background-color: #ffffff;
+            .admin-main-content:has(.dashboard-content-wrapper)
+            .dashboard-panel-table thead th {
+                position: sticky;
+                top: 0;
+                z-index: 2;
             }
         }
 
-        @media (max-width: 768px) {
-            .admin-layout {
-                display: block;
+        /* =========================
+           TABLET AND MOBILE
+        ========================= */
+
+        @media (max-width: 991.98px) {
+            .app-navbar {
+                padding: 8px 12px;
             }
 
+            .app-navbar .container-fluid {
+                gap: 8px;
+            }
+
+            /* Hide desktop top links; show unified hamburger instead */
+            .app-navbar .navbar-collapse {
+                display: none !important;
+            }
+
+            .mobile-menu-toggle {
+                display: inline-flex;
+            }
+
+            .app-navbar .navbar-brand {
+                font-size: 16px;
+                line-height: 1.25;
+                max-width: calc(100% - 54px);
+            }
+
+            /* Hide the separate Admin sidebar on smaller screens */
             .admin-sidebar {
-                position: relative;
-                top: auto;
-                left: auto;
-                bottom: auto;
-                width: 100%;
-                min-width: 0;
-                height: auto;
-                max-height: none;
-                overflow: visible;
-                padding: 12px;
-                margin-top: 0;
+                display: none;
             }
 
             .admin-main-content {
                 margin-left: 0;
                 width: 100%;
                 min-width: 0;
-                padding: 15px;
+                padding: 16px;
             }
 
-            /* Use the full available width on mobile */
             .admin-main-content > .dashboard-content-wrapper {
                 width: 100%;
                 max-width: 100%;
                 margin-left: 0;
                 margin-right: 0;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .app-navbar {
+                padding: 8px 10px;
+            }
+
+            .app-navbar .navbar-brand {
+                font-size: 13px;
+                max-width: calc(100% - 48px);
+                line-height: 1.25;
+                padding: 2px 0;
+            }
+
+            .mobile-menu-toggle {
+                width: 38px;
+                height: 36px;
+                font-size: 22px;
+            }
+
+            .admin-main-content {
+                padding: 10px;
+            }
+
+            .page-messages .container-fluid {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .mobile-nav-drawer {
+                width: min(88vw, 340px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mobile-nav-drawer {
+                transition: none;
             }
         }
     </style>
@@ -278,28 +529,26 @@
             </a>
 
             {% if user.is_authenticated %}
+                <!-- Mobile hamburger opens the unified navigation drawer -->
                 <button
-                    class="navbar-toggler bg-light"
+                    class="mobile-menu-toggle"
+                    id="mobileMenuToggle"
                     type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar"
+                    aria-label="Open navigation menu"
+                    aria-controls="mobileNavDrawer"
                     aria-expanded="false"
-                    aria-label="Toggle navigation"
                 >
-                    <span class="navbar-toggler-icon"></span>
+                    <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             {% endif %}
 
+            <!-- Existing desktop top navigation -->
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto">
 
                     {% if user.is_authenticated %}
 
-                        <!-- Admin Top Navigation -->
                         {% if user.role == 'ADMIN' %}
-
-                            
 
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'inventory:activity_log' %}">
@@ -312,6 +561,7 @@
                                     Database Backup
                                 </a>
                             </li>
+
                             <li class="nav-item dropdown">
                                 <a
                                     class="nav-link dropdown-toggle"
@@ -324,41 +574,16 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:daily_sales_report' %}">
-                                            Daily Sales Report
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:monthly_sales_report' %}">
-                                            Monthly Sales Report
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:yearly_sales_report' %}">
-                                            Yearly Sales Report
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:inventory_report' %}">
-                                            Inventory Report
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:profit_loss_report' %}">
-                                            Profit &amp; Loss Report
-                                        </a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:daily_sales_report' %}">Daily Sales Report</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:monthly_sales_report' %}">Monthly Sales Report</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:yearly_sales_report' %}">Yearly Sales Report</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:inventory_report' %}">Inventory Report</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:profit_loss_report' %}">Profit &amp; Loss Report</a></li>
                                 </ul>
                             </li>
 
                         {% else %}
 
-                            <!-- Manager and Salesman Navigation -->
                             <li class="nav-item">
                                 <a
                                     class="nav-link"
@@ -369,22 +594,16 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'inventory:product_list' %}">
-                                    Products
-                                </a>
+                                <a class="nav-link" href="{% url 'inventory:product_list' %}">Products</a>
                             </li>
 
                             {% if user.role == 'MANAGER' %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'inventory:supplier_list' %}">
-                                        Suppliers
-                                    </a>
+                                    <a class="nav-link" href="{% url 'inventory:supplier_list' %}">Suppliers</a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'inventory:customer_list' %}">
-                                        Customers
-                                    </a>
+                                    <a class="nav-link" href="{% url 'inventory:customer_list' %}">Customers</a>
                                 </li>
                             {% endif %}
 
@@ -400,47 +619,33 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:stock_entry_list' %}">
-                                            Stock Entries
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:stock_history' %}">
-                                            Stock History
-                                        </a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:stock_entry_list' %}">Stock Entries</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'inventory:stock_history' %}">Stock History</a></li>
                                 </ul>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <a
-                                    class="nav-link dropdown-toggle"
-                                    href="#"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    Sales
-                                </a>
+                            {% if user.role == 'SALESMAN' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'inventory:sale_list' %}">Sales &amp; Invoices</a>
+                                </li>
+                            {% elif user.role == 'MANAGER' %}
+                                <li class="nav-item dropdown">
+                                    <a
+                                        class="nav-link dropdown-toggle"
+                                        href="#"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Sales
+                                    </a>
 
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'inventory:sale_list' %}">
-                                            Sales &amp; Invoices
-                                        </a>
-                                    </li>
-
-                                    {% if user.role == 'MANAGER' %}
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:sale_return_list' %}">
-                                                Sales Returns
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </li>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'inventory:sale_list' %}">Sales &amp; Invoices</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:sale_return_list' %}">Sales Returns</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
 
                             {% if user.role == 'MANAGER' %}
                                 <li class="nav-item dropdown">
@@ -455,42 +660,17 @@
                                     </a>
 
                                     <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:daily_sales_report' %}">
-                                                Daily Sales Report
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:monthly_sales_report' %}">
-                                                Monthly Sales Report
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:yearly_sales_report' %}">
-                                                Yearly Sales Report
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:inventory_report' %}">
-                                                Inventory Report
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'inventory:profit_loss_report' %}">
-                                                Profit &amp; Loss Report
-                                            </a>
-                                        </li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:daily_sales_report' %}">Daily Sales Report</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:monthly_sales_report' %}">Monthly Sales Report</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:yearly_sales_report' %}">Yearly Sales Report</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:inventory_report' %}">Inventory Report</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'inventory:profit_loss_report' %}">Profit &amp; Loss Report</a></li>
                                     </ul>
                                 </li>
                             {% endif %}
 
                         {% endif %}
 
-                        <!-- Account Dropdown -->
                         <li class="nav-item dropdown">
                             <a
                                 class="nav-link dropdown-toggle"
@@ -508,16 +688,8 @@
                                         Signed in as {{ user.username }}
                                     </span>
                                 </li>
-
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="{% url 'logout' %}">
-                                        Logout
-                                    </a>
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                             </ul>
                         </li>
 
@@ -528,11 +700,191 @@
         </div>
     </nav>
 
+    <!-- Mobile navigation backdrop -->
+    {% if user.is_authenticated %}
+        <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+
+        <!-- One combined mobile menu for top navigation and sidebar links -->
+        <aside
+            class="mobile-nav-drawer"
+            id="mobileNavDrawer"
+            aria-label="Mobile navigation"
+            aria-hidden="true"
+            inert
+        >
+            <div class="mobile-nav-header">
+                <div class="mobile-nav-title">Navigation Menu</div>
+
+                <button
+                    type="button"
+                    class="mobile-nav-close"
+                    id="mobileMenuClose"
+                    aria-label="Close navigation menu"
+                >
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="mobile-nav-content">
+
+                <div class="mobile-nav-user">
+                    <strong>{{ user.username }}</strong>
+                    Signed in as {{ user.get_role_display|default:user.role }}
+                </div>
+
+                <div class="mobile-nav-section-title">Main Navigation</div>
+
+                {% if user.role == 'ADMIN' %}
+
+                    <a class="mobile-nav-link" href="{% url 'admin_dashboard' %}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:activity_log' %}">
+                        <i class="bi bi-journal-text"></i> Activity Logs
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:backup_page' %}">
+                        <i class="bi bi-database"></i> Database Backup
+                    </a>
+
+                    <div class="mobile-nav-section-title">Inventory Management</div>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:product_list' %}">
+                        <i class="bi bi-box-seam"></i> Products
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:supplier_list' %}">
+                        <i class="bi bi-truck"></i> Suppliers
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:customer_list' %}">
+                        <i class="bi bi-people"></i> Customers
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:stock_entry_list' %}">
+                        <i class="bi bi-box-arrow-in-down"></i> Stock Entries
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:stock_history' %}">
+                        <i class="bi bi-clock-history"></i> Stock History
+                    </a>
+
+                    <div class="mobile-nav-section-title">Sales Management</div>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:sale_list' %}">
+                        <i class="bi bi-receipt"></i> Sales &amp; Invoices
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:sale_return_list' %}">
+                        <i class="bi bi-arrow-return-left"></i> Sales Returns
+                    </a>
+
+                    <div class="mobile-nav-section-title">Reports</div>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:daily_sales_report' %}">
+                        <i class="bi bi-calendar-day"></i> Daily Sales Report
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:monthly_sales_report' %}">
+                        <i class="bi bi-calendar-month"></i> Monthly Sales Report
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:yearly_sales_report' %}">
+                        <i class="bi bi-calendar3"></i> Yearly Sales Report
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:inventory_report' %}">
+                        <i class="bi bi-clipboard-data"></i> Inventory Report
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:profit_loss_report' %}">
+                        <i class="bi bi-graph-up-arrow"></i> Profit &amp; Loss Report
+                    </a>
+
+                {% else %}
+
+                    <a
+                        class="mobile-nav-link"
+                        href="{% if user.role == 'MANAGER' %}{% url 'manager_dashboard' %}{% else %}{% url 'salesman_dashboard' %}{% endif %}"
+                    >
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:product_list' %}">
+                        <i class="bi bi-box-seam"></i> Products
+                    </a>
+
+                    {% if user.role == 'MANAGER' %}
+                        <a class="mobile-nav-link" href="{% url 'inventory:supplier_list' %}">
+                            <i class="bi bi-truck"></i> Suppliers
+                        </a>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:customer_list' %}">
+                            <i class="bi bi-people"></i> Customers
+                        </a>
+                    {% endif %}
+
+                    <div class="mobile-nav-section-title">Stock Management</div>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:stock_entry_list' %}">
+                        <i class="bi bi-box-arrow-in-down"></i> Stock Entries
+                    </a>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:stock_history' %}">
+                        <i class="bi bi-clock-history"></i> Stock History
+                    </a>
+
+                    <div class="mobile-nav-section-title">Sales</div>
+
+                    <a class="mobile-nav-link" href="{% url 'inventory:sale_list' %}">
+                        <i class="bi bi-receipt"></i> Sales &amp; Invoices
+                    </a>
+
+                    {% if user.role == 'MANAGER' %}
+                        <a class="mobile-nav-link" href="{% url 'inventory:sale_return_list' %}">
+                            <i class="bi bi-arrow-return-left"></i> Sales Returns
+                        </a>
+
+                        <div class="mobile-nav-section-title">Reports</div>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:daily_sales_report' %}">
+                            <i class="bi bi-calendar-day"></i> Daily Sales Report
+                        </a>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:monthly_sales_report' %}">
+                            <i class="bi bi-calendar-month"></i> Monthly Sales Report
+                        </a>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:yearly_sales_report' %}">
+                            <i class="bi bi-calendar3"></i> Yearly Sales Report
+                        </a>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:inventory_report' %}">
+                            <i class="bi bi-clipboard-data"></i> Inventory Report
+                        </a>
+
+                        <a class="mobile-nav-link" href="{% url 'inventory:profit_loss_report' %}">
+                            <i class="bi bi-graph-up-arrow"></i> Profit &amp; Loss Report
+                        </a>
+                    {% endif %}
+
+                {% endif %}
+
+                <div class="mobile-nav-divider"></div>
+
+                <a class="mobile-nav-link mobile-nav-logout" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+
+            </div>
+        </aside>
+    {% endif %}
+
     <!-- Django Messages -->
     {% if messages %}
         <div class="page-messages">
             <div class="container-fluid pt-3">
-
                 {% for message in messages %}
                     <div
                         class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'message' %}info{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show"
@@ -548,18 +900,15 @@
                         ></button>
                     </div>
                 {% endfor %}
-
             </div>
         </div>
     {% endif %}
 
-    <!-- Admin Sidebar Wrapper -->
+    <!-- Desktop Admin Sidebar -->
     {% if user.is_authenticated and user.role == 'ADMIN' %}
-
         <div class="admin-layout">
 
             <aside class="admin-sidebar">
-
                 <a href="{% url 'admin_dashboard' %}" class="sidebar-link">
                     Dashboard
                 </a>
@@ -591,34 +940,119 @@
                 <a href="{% url 'inventory:sale_return_list' %}" class="sidebar-link">
                     Sales Returns
                 </a>
-
             </aside>
 
             <main class="admin-main-content">
-
     {% endif %}
 
     {% block content %}{% endblock %}
 
     <!-- Close Admin Sidebar Wrapper -->
     {% if user.is_authenticated and user.role == 'ADMIN' %}
-
             </main>
-
         </div>
-
     {% endif %}
 
-    <!-- Highlight the current admin sidebar page -->
+    <!-- Navigation and responsive drawer behavior -->
     <script>
-        document.querySelectorAll(".admin-sidebar .sidebar-link").forEach(function (link) {
-            const linkUrl = new URL(link.href, window.location.origin);
-            const currentPath = window.location.pathname.replace(/\/+$/, "");
-            const linkPath = linkUrl.pathname.replace(/\/+$/, "");
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebarLinks = document.querySelectorAll(
+                ".admin-sidebar .sidebar-link"
+            );
 
-            if (linkPath === currentPath) {
-                link.classList.add("active");
+            const currentPath = window.location.pathname.replace(/\/+$/, "");
+
+            sidebarLinks.forEach(function (link) {
+                const linkUrl = new URL(link.href, window.location.origin);
+                const linkPath = linkUrl.pathname.replace(/\/+$/, "");
+
+                if (linkPath === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+
+            const menuToggle = document.getElementById("mobileMenuToggle");
+            const menuDrawer = document.getElementById("mobileNavDrawer");
+            const menuBackdrop = document.getElementById("mobileNavBackdrop");
+            const menuClose = document.getElementById("mobileMenuClose");
+
+            if (!menuToggle || !menuDrawer || !menuBackdrop || !menuClose) {
+                return;
             }
+
+            function openMobileMenu() {
+                menuDrawer.classList.add("open");
+                menuBackdrop.classList.add("show");
+                menuDrawer.removeAttribute("inert");
+                menuDrawer.setAttribute("aria-hidden", "false");
+                menuToggle.setAttribute("aria-expanded", "true");
+                menuToggle.setAttribute("aria-label", "Close navigation menu");
+                document.body.classList.add("mobile-nav-open");
+
+                menuClose.focus();
+            }
+
+            function closeMobileMenu(returnFocus = false) {
+                menuDrawer.classList.remove("open");
+                menuBackdrop.classList.remove("show");
+                menuDrawer.setAttribute("inert", "");
+                menuDrawer.setAttribute("aria-hidden", "true");
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", "Open navigation menu");
+                document.body.classList.remove("mobile-nav-open");
+
+                if (returnFocus) {
+                    menuToggle.focus();
+                }
+            }
+
+            menuToggle.addEventListener("click", function () {
+                if (menuDrawer.classList.contains("open")) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+
+            menuClose.addEventListener("click", function () {
+                closeMobileMenu(true);
+            });
+
+            menuBackdrop.addEventListener("click", function () {
+                closeMobileMenu(true);
+            });
+
+            menuDrawer.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    closeMobileMenu();
+                });
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (
+                    event.key === "Escape" &&
+                    menuDrawer.classList.contains("open")
+                ) {
+                    closeMobileMenu(true);
+                }
+            });
+
+            /* Highlight the current page in the mobile drawer */
+            menuDrawer.querySelectorAll(".mobile-nav-link").forEach(function (link) {
+                const linkUrl = new URL(link.href, window.location.origin);
+                const linkPath = linkUrl.pathname.replace(/\/+$/, "");
+
+                if (linkPath === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+
+            /* If the screen grows to desktop size, close the mobile drawer */
+            window.addEventListener("resize", function () {
+                if (window.innerWidth > 991.98) {
+                    closeMobileMenu();
+                }
+            });
         });
     </script>
 

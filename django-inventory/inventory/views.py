@@ -2997,7 +2997,7 @@ def product_price(request):
 def backup_page(request):
     return render(
         request,
-        'accounts/admin-backup.html'
+        'accounts/admin_backup.html'
     )
 
 

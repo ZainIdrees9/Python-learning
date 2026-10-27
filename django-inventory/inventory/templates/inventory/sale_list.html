@@ -1,34 +1,41 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Sales{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* Main page container */
+    /* =====================================================
+       MAIN PAGE CONTAINER
+    ===================================================== */
     .sales-page {
         width: 100%;
         max-width: 1400px;
-        margin: 0 auto;
-        {% comment %} padding: 20px 16px !important; {% endcomment %}
+        padding: 20px 30px !important;
         box-sizing: border-box;
     }
 
-    /* Page heading */
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
     .sales-page .sales-page-header {
         gap: 12px;
         margin-bottom: 20px !important;
     }
 
     .sales-page .sales-page-header h2 {
-        font-size: 25px;
+        font-size: 35px;
         font-weight: 700;
+        color: #172554;
     }
 
     .sales-page .sales-page-header p {
         font-size: 13px;
     }
 
-    /* Compact cards */
+    /* =====================================================
+       CARDS
+    ===================================================== */
     .sales-page .card {
         min-width: 0;
         border: 1px solid #e5e7eb;
@@ -43,6 +50,7 @@
     .sales-page .card-header h5 {
         font-size: 15px;
         font-weight: 600;
+        color: #172554;
     }
 
     .sales-page .card-body {
@@ -50,14 +58,20 @@
         min-width: 0;
     }
 
-    /* Form labels */
+    .sales-page .card.mb-4 {
+        margin-bottom: 14px !important;
+    }
+
+    /* =====================================================
+       FORM LABELS AND CONTROLS
+    ===================================================== */
     .sales-page .form-label {
         margin-bottom: 5px;
         font-size: 12px;
         font-weight: 600;
+        color: #334155;
     }
 
-    /* Form controls */
     .sales-page .form-control,
     .sales-page .form-select {
         min-height: 36px;
@@ -66,7 +80,13 @@
         border-radius: 6px;
     }
 
-    /* Buttons */
+    .sales-page .row {
+        min-width: 0;
+    }
+
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
     .sales-page .btn {
         font-size: 13px;
         padding: 7px 12px;
@@ -78,22 +98,17 @@
         font-size: 11px;
     }
 
-    /* Filter and lookup spacing */
-    .sales-page .card.mb-4 {
-        margin-bottom: 14px !important;
-    }
-
-    .sales-page .row {
-        min-width: 0;
-    }
-
-    /* Filter information */
+    /* =====================================================
+       ALERTS
+    ===================================================== */
     .sales-page .alert {
         padding: 10px 12px;
         font-size: 12px;
     }
 
-    /* Sales table */
+    /* =====================================================
+       SALES TABLE
+    ===================================================== */
     .sales-page .table-responsive {
         width: 100%;
         overflow-x: auto;
@@ -101,6 +116,7 @@
     }
 
     .sales-page .table {
+        width: 100%;
         margin-bottom: 0;
         font-size: 12px;
         vertical-align: middle;
@@ -109,6 +125,7 @@
     .sales-page .table thead th {
         padding: 9px 10px;
         font-size: 11px;
+        font-weight: 700;
         white-space: nowrap;
     }
 
@@ -129,7 +146,6 @@
         margin-bottom: 3px !important;
     }
 
-    /* Table action buttons */
     .sales-page .table td:last-child {
         white-space: nowrap;
     }
@@ -138,29 +154,37 @@
         margin: 2px 0;
     }
 
-    /* Sale count badge */
+    /* =====================================================
+       SALE COUNT BADGE
+    ===================================================== */
     .sales-page .badge {
         font-size: 11px;
         padding: 5px 8px;
     }
 
-    /* Empty state */
+    /* =====================================================
+       EMPTY STATE
+    ===================================================== */
     .sales-page .empty-sales {
         padding: 28px 12px !important;
     }
 
     .sales-page .empty-sales h5 {
         font-size: 16px;
+        font-weight: 600;
     }
 
     .sales-page .empty-sales p {
         font-size: 12px;
     }
 
-    /* Tablet */
+    /* =====================================================
+       TABLET
+    ===================================================== */
     @media (max-width: 991.98px) {
         .sales-page {
-            padding: 16px 12px !important;
+            margin-top: 20px !important;
+            padding: 0 16px 16px !important;
         }
 
         .sales-page .sales-page-header h2 {
@@ -181,10 +205,13 @@
         }
     }
 
-    /* Mobile */
+    /* =====================================================
+       MOBILE
+    ===================================================== */
     @media (max-width: 575.98px) {
         .sales-page {
-            padding: 12px 8px !important;
+            margin-top: 14px !important;
+            padding: 0 10px 12px !important;
         }
 
         .sales-page .sales-page-header {
@@ -284,10 +311,13 @@
         }
     }
 
-    /* Very narrow devices */
+    /* =====================================================
+       VERY NARROW MOBILE DEVICES
+    ===================================================== */
     @media (max-width: 360px) {
         .sales-page {
-            padding: 8px 5px !important;
+            margin-top: 10px !important;
+            padding: 0 6px 10px !important;
         }
 
         .sales-page .sales-page-header h2 {
@@ -407,6 +437,7 @@
 
                 <div class="row g-3">
 
+                    <!-- FROM DATE -->
                     <div class="col-6 col-md-3">
 
                         <label for="from_date" class="form-label">
@@ -421,6 +452,7 @@
 
                     </div>
 
+                    <!-- TO DATE -->
                     <div class="col-6 col-md-3">
 
                         <label for="to_date" class="form-label">
@@ -435,6 +467,7 @@
 
                     </div>
 
+                    <!-- CUSTOMER FILTER -->
                     <div class="col-6 col-md-3">
 
                         <label for="customer" class="form-label">
@@ -460,6 +493,7 @@
 
                     </div>
 
+                    <!-- PRODUCT FILTER -->
                     <div class="col-6 col-md-3">
 
                         <label for="product" class="form-label">
@@ -485,6 +519,7 @@
 
                     </div>
 
+                    <!-- FILTER BUTTONS -->
                     <div class="col-12">
 
                         <div class="d-flex flex-wrap gap-2">
@@ -661,6 +696,7 @@
 
                                         <a href="{% url 'inventory:sale_invoice' sale.SaleId %}"
                                            target="_blank"
+                                           rel="noopener noreferrer"
                                            class="btn btn-sm btn-success ms-1"
                                            title="View / Print Invoice">
 

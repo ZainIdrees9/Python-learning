@@ -1,0 +1,925 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Create User | Stock, Inventory and Sales Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --user-primary: #2563eb;
+        --user-primary-dark: #1d4ed8;
+        --user-heading: #172554;
+        --user-text: #475569;
+        --user-muted: #64748b;
+        --user-border: #e2e8f0;
+        --user-background: #f8fafc;
+        --user-radius: 14px;
+    }
+
+    .create-user-page {
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+        box-sizing: border-box;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--user-primary);
+        background: #dbeafe;
+        border-radius: 14px;
+        font-size: 24px;
+    }
+
+    .page-title-group h1 {
+        color: var(--user-heading);
+        font-size: 27px;
+        line-height: 1.3;
+        font-weight: 750;
+        margin: 0 0 5px;
+    }
+
+    .page-title-group p {
+        color: var(--user-muted);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 16px;
+        color: #334155;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background .2s, border-color .2s;
+    }
+
+    .back-button:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    .form-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .form-card,
+    .info-card {
+        background: #fff;
+        border: 1px solid var(--user-border);
+        border-radius: var(--user-radius);
+        box-shadow: 0 5px 20px rgba(15, 23, 42, .045);
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        padding: 22px 25px;
+        border-bottom: 1px solid var(--user-border);
+    }
+
+    .card-header-custom h2 {
+        color: var(--user-heading);
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 6px;
+    }
+
+    .card-header-custom p {
+        color: var(--user-muted);
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .form-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 650;
+        margin-bottom: 8px;
+    }
+
+    .required-mark {
+        color: #dc2626;
+    }
+
+    .input-wrap {
+        position: relative;
+    }
+
+    .input-wrap > .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .input-wrap .form-control {
+        padding-left: 40px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 46px;
+        color: #0f172a;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        font-size: 13px;
+        background-color: #fff;
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--user-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .form-help {
+        color: var(--user-muted);
+        font-size: 11px;
+        line-height: 1.6;
+        margin-top: 7px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        padding: 5px;
+        color: #64748b;
+        border: 0;
+        background: transparent;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .password-toggle:hover {
+        color: var(--user-primary);
+    }
+
+    .password-toggle ~ .form-control {
+        padding-right: 62px;
+    }
+
+    .role-selection {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .role-option {
+        position: relative;
+        display: block;
+        cursor: pointer;
+    }
+
+    .role-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .role-option-content {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 75px;
+        padding: 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #fff;
+        transition: border-color .2s, background .2s;
+    }
+
+    .role-option input:checked + .role-option-content {
+        border-color: var(--user-primary);
+        background: #eff6ff;
+        box-shadow: inset 0 0 0 1px var(--user-primary);
+    }
+
+    .role-option input:focus-visible + .role-option-content {
+        outline: 3px solid rgba(37, 99, 235, .25);
+        outline-offset: 2px;
+    }
+
+    .role-icon {
+        width: 39px;
+        height: 39px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 17px;
+    }
+
+    .role-option:last-child .role-icon {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .role-name {
+        display: block;
+        color: var(--user-heading);
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+    .role-description {
+        display: block;
+        color: var(--user-muted);
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .form-divider {
+        border: 0;
+        border-top: 1px solid var(--user-border);
+        margin: 25px 0 20px;
+        opacity: 1;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .btn-create {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 44px;
+        padding: 11px 20px;
+        color: #fff;
+        background: var(--user-primary);
+        border: 1px solid var(--user-primary);
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: background .2s;
+    }
+
+    .btn-create:hover {
+        color: #fff;
+        background: var(--user-primary-dark);
+        border-color: var(--user-primary-dark);
+    }
+
+    .btn-reset {
+        min-height: 44px;
+        padding: 11px 17px;
+        color: #334155;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-reset:hover {
+        background: #f8fafc;
+    }
+
+    .info-card {
+        padding: 22px;
+    }
+
+    .info-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--user-heading);
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .info-heading i {
+        color: var(--user-primary);
+        font-size: 18px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        margin-bottom: 19px;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-check {
+        width: 27px;
+        height: 27px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #15803d;
+        background: #dcfce7;
+        border-radius: 50%;
+        font-size: 12px;
+    }
+
+    .info-item strong {
+        display: block;
+        color: #334155;
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .info-item p {
+        color: var(--user-muted);
+        font-size: 11px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+        margin-top: 22px;
+        background: #f8fafc;
+        border: 1px solid var(--user-border);
+        border-radius: 10px;
+    }
+
+    .security-note i {
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .security-note p {
+        color: var(--user-muted);
+        font-size: 11px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .alert {
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    .alert ul {
+        padding-left: 20px;
+    }
+
+    .alert li + li {
+        margin-top: 4px;
+    }
+
+    @media (max-width: 850px) {
+        .form-layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .info-card {
+            order: 2;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .create-user-page {
+            padding: 17px 10px 28px;
+        }
+
+        .page-header {
+            align-items: flex-start;
+        }
+
+        .page-title-group {
+            gap: 11px;
+        }
+
+        .page-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+        }
+
+        .page-title-group h1 {
+            font-size: 21px;
+        }
+
+        .page-title-group p {
+            font-size: 12px;
+        }
+
+        .back-button {
+            width: 100%;
+        }
+
+        .card-header-custom,
+        .form-body {
+            padding: 19px 16px;
+        }
+
+        .role-selection {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .form-actions button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-user-page">
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="page-title-group">
+            <div class="page-icon">
+                <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+            </div>
+
+            <div>
+                <h1>Create User Account</h1>
+                <p>Add a Manager or Salesman to your system.</p>
+            </div>
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}" class="back-button">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Back to Dashboard
+        </a>
+    </header>
+
+    <!-- Success Message -->
+    {% if success_message %}
+        <div class="alert alert-success alert-dismissible fade show mb-4"
+             role="alert">
+            <i class="bi bi-check-circle-fill me-2"
+               aria-hidden="true"></i>
+            <strong>Account created!</strong>
+            {{ success_message }}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    {% endif %}
+
+    <!-- Validation Errors -->
+    {% if errors %}
+        <div class="alert alert-danger mb-4" role="alert">
+            <div class="fw-bold mb-2">
+                <i class="bi bi-exclamation-triangle-fill me-2"
+                   aria-hidden="true"></i>
+                Please correct the following:
+            </div>
+
+            <ul class="mb-0">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="form-layout">
+
+        <!-- Create User Form -->
+        <section class="form-card">
+
+            <div class="card-header-custom">
+                <h2>Account Information</h2>
+                <p>Enter the user's details and select the appropriate role.</p>
+            </div>
+
+            <div class="form-body">
+                <form method="post"
+                      action="{% url 'accounts:admin_create_user' %}"
+                      autocomplete="off">
+
+                    {% csrf_token %}
+
+                    <!-- Username -->
+                    <div class="mb-4">
+                        <label for="username" class="form-label">
+                            Username <span class="required-mark">*</span>
+                        </label>
+
+                        <div class="input-wrap">
+                            <i class="bi bi-person input-icon"
+                               aria-hidden="true"></i>
+
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-control"
+                                placeholder="Enter a unique username"
+                                value="{{ form_username }}"
+                                maxlength="150"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-help">
+                            The user will use this username to log in.
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="form-label">
+                            Email Address
+                        </label>
+
+                        <div class="input-wrap">
+                            <i class="bi bi-envelope input-icon"
+                               aria-hidden="true"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="name@example.com"
+                                value="{{ form_email }}"
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <div class="form-help">
+                            Email address is optional.
+                        </div>
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Assign User Role
+                            <span class="required-mark">*</span>
+                        </label>
+
+                        <div class="role-selection">
+
+                            <label class="role-option">
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="MANAGER"
+                                    {% if selected_role == 'MANAGER' %}
+                                        checked
+                                    {% endif %}
+                                    required
+                                >
+
+                                <span class="role-option-content">
+                                    <span class="role-icon">
+                                        <i class="bi bi-person-gear"
+                                           aria-hidden="true"></i>
+                                    </span>
+
+                                    <span>
+                                        <span class="role-name">Manager</span>
+                                        <span class="role-description">
+                                            Business and inventory management
+                                        </span>
+                                    </span>
+                                </span>
+                            </label>
+
+                            <label class="role-option">
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value="SALESMAN"
+                                    {% if selected_role == 'SALESMAN' %}
+                                        checked
+                                    {% endif %}
+                                    required
+                                >
+
+                                <span class="role-option-content">
+                                    <span class="role-icon">
+                                        <i class="bi bi-person-badge"
+                                           aria-hidden="true"></i>
+                                    </span>
+
+                                    <span>
+                                        <span class="role-name">Salesman</span>
+                                        <span class="role-description">
+                                            Sales and invoice operations
+                                        </span>
+                                    </span>
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <div class="form-help">
+                            Admin accounts cannot be created through this form.
+                        </div>
+                    </div>
+
+                    <hr class="form-divider">
+
+                    <!-- Password -->
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+                            <label for="password" class="form-label">
+                                Password
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <div class="input-wrap">
+                                <i class="bi bi-lock input-icon"
+                                   aria-hidden="true"></i>
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Create a password"
+                                    minlength="8"
+                                    autocomplete="new-password"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-toggle"
+                                    data-password-target="password"
+                                    aria-label="Show password"
+                                    aria-pressed="false">
+                                    Show
+                                </button>
+                            </div>
+
+                            <div class="form-help">
+                                Use at least 8 characters and follow the
+                                configured password rules.
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="col-12 col-md-6">
+                            <label for="confirm_password" class="form-label">
+                                Confirm Password
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <div class="input-wrap">
+                                <i class="bi bi-shield-lock input-icon"
+                                   aria-hidden="true"></i>
+
+                                <input
+                                    type="password"
+                                    id="confirm_password"
+                                    name="confirm_password"
+                                    class="form-control"
+                                    placeholder="Re-enter password"
+                                    minlength="8"
+                                    autocomplete="new-password"
+                                    required
+                                >
+
+                                <button
+                                    type="button"
+                                    class="password-toggle"
+                                    data-password-target="confirm_password"
+                                    aria-label="Show confirm password"
+                                    aria-pressed="false">
+                                    Show
+                                </button>
+                            </div>
+
+                            <div class="form-help">
+                                Enter the same password again.
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions mt-4">
+                        <button type="reset" class="btn-reset">
+                            <i class="bi bi-arrow-counterclockwise me-1"
+                               aria-hidden="true"></i>
+                            Reset Form
+                        </button>
+
+                        <button type="submit" class="btn-create">
+                            <i class="bi bi-person-plus-fill"
+                               aria-hidden="true"></i>
+                            Create Account
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- Information Sidebar -->
+        <aside class="info-card">
+
+            <div class="info-heading">
+                <i class="bi bi-info-circle-fill"
+                   aria-hidden="true"></i>
+                Before You Create
+            </div>
+
+            <div class="info-item">
+                <div class="info-check">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <strong>Unique Username</strong>
+                    <p>Each account must have a username that is not already
+                       registered.</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-check">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <strong>Choose the Correct Role</strong>
+                    <p>Managers and Salesmen receive permissions according
+                       to your application's role-based access rules.</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-check">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <strong>Secure Password</strong>
+                    <p>Django validates passwords using your configured
+                       password validators and hashes them when saving.</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-check">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                </div>
+
+                <div>
+                    <strong>Admin-Controlled Creation</strong>
+                    <p>Only authorized Admin users should be allowed to
+                       access this account creation page.</p>
+                </div>
+            </div>
+
+            <div class="security-note">
+                <i class="bi bi-shield-lock-fill"
+                   aria-hidden="true"></i>
+
+                <p>
+                    <strong>Security reminder</strong><br>
+                    Never share account passwords. Use the appropriate
+                    permissions for each staff member.
+                </p>
+            </div>
+
+        </aside>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Toggle password visibility.
+        document.querySelectorAll("[data-password-target]").forEach(
+            function (button) {
+                button.addEventListener("click", function () {
+                    const targetId = button.getAttribute(
+                        "data-password-target"
+                    );
+                    const passwordInput = document.getElementById(targetId);
+
+                    if (!passwordInput) {
+                        return;
+                    }
+
+                    const shouldShow = passwordInput.type === "password";
+
+                    passwordInput.type = shouldShow ? "text" : "password";
+                    button.textContent = shouldShow ? "Hide" : "Show";
+                    button.setAttribute(
+                        "aria-label",
+                        shouldShow ? "Hide password" : "Show password"
+                    );
+                    button.setAttribute(
+                        "aria-pressed",
+                        shouldShow ? "true" : "false"
+                    );
+                });
+            }
+        );
+
+        // Client-side password confirmation check.
+        const form = document.querySelector(
+            'form[action*="admin-create-user"]'
+        );
+
+        if (form) {
+            form.addEventListener("submit", function (event) {
+                const password = document.getElementById("password");
+                const confirmPassword = document.getElementById(
+                    "confirm_password"
+                );
+
+                if (
+                    password &&
+                    confirmPassword &&
+                    password.value !== confirmPassword.value
+                ) {
+                    event.preventDefault();
+                    confirmPassword.setCustomValidity(
+                        "Passwords do not match."
+                    );
+                    confirmPassword.reportValidity();
+                }
+            });
+
+            const confirmPassword = document.getElementById(
+                "confirm_password"
+            );
+
+            if (confirmPassword) {
+                confirmPassword.addEventListener("input", function () {
+                    confirmPassword.setCustomValidity("");
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}
