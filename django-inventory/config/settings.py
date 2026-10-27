@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY SETTINGS
 # ============================================================
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("ili7_qz0g0**%zzagcu1%@w=b74p1(pndah2=nxxf91h47+ds=")
 
 if not SECRET_KEY:
     if os.environ.get("VERCEL", "").lower() == "1":
