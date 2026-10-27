@@ -1,0 +1,2 @@
+[tool.vercel]
+entrypoint = "django-inventory.config.asgi:application"
