@@ -13,10 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY SETTINGS
 # ============================================================
 
-SECRET_KEY = os.environ.get("ili7_qz0g0**%zzagcu1%@w=b74p1(pndah2=nxxf91h47+ds=")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 if not SECRET_KEY:
-    if os.environ.get("VERCEL", "").lower() == "1":
+    if os.environ.get("VERCEL"):
         raise RuntimeError(
             "SECRET_KEY environment variable must be configured on Vercel."
         )
@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "accounts",
     "inventory",
 ]
@@ -84,9 +83,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / "templates",
-        ],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -118,7 +115,9 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_HOST = os.environ.get("DB_HOST")
 DB_PORT = os.environ.get("DB_PORT", "3306")
 
-if os.environ.get("VERCEL") and not all(
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+
+if IS_VERCEL and not all(
     [DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]
 ):
     raise RuntimeError(
@@ -181,11 +180,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # ============================================================
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Karachi"
 
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -194,7 +191,6 @@ USE_TZ = True
 # ============================================================
 
 STATIC_URL = "/static/"
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
@@ -210,7 +206,6 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # ============================================================
 
 LOGIN_URL = "/"
-
 LOGOUT_REDIRECT_URL = "/"
 
 
@@ -226,6 +221,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ============================================================
 
 if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+    CSRF_TRUSTED_ORIGINS = [
+        "https://*.vercel.app",
+    ]
