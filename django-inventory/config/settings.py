@@ -1,6 +1,29 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "ssl": {
+                "ca": str(BASE_DIR / "certificates" / "ca.pem"),
+            },
+        },
+    }
+}
+
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 SECRET_KEY = 'CHANGE_THIS_TO_A_NEW_SECRET_KEY'
 
