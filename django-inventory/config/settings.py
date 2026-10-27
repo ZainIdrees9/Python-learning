@@ -25,9 +25,7 @@ if not SECRET_KEY:
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
-    "python-learning-django-inventory-f5x8-96q75rz66-zaini9.vercel.app",
-    "python-learning-django-inventory-ea.vercel.app",
-    "python-inventoryapp.vercel.app",
+    ".vercel.app",
     "localhost",
     "127.0.0.1",
 ]
