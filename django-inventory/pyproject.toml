@@ -1,4 +1,13 @@
 
+[project]
+name = "django-inventory"
+version = "1.0.0"
+dependencies = [
+    "Django",
+    "mysqlclient",
+    "gunicorn",
+    "whitenoise"
+]
+
 [tool.vercel]
 entrypoint = "config.asgi:application"
-
