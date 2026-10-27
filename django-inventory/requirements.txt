@@ -1,5 +1,5 @@
 
 Django>=6.1,<6.2
-mysqlclient
+PyMySQL
 gunicorn
 whitenoise
