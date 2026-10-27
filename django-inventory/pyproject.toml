@@ -1,0 +1,4 @@
+
+[tool.vercel]
+entrypoint = "config.asgi:application"
+
