@@ -7,7 +7,8 @@ SECRET_KEY = 'CHANGE_THIS_TO_A_NEW_SECRET_KEY'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-     "python-inventoryapp.vercel.app",
+    "python-learning-django-inventory-ea.vercel.app",
+    "python-inventoryapp.vercel.app",
     "localhost",
     "127.0.0.1",
 ]
