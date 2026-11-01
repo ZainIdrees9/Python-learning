@@ -109,53 +109,73 @@ ASGI_APPLICATION = "config.asgi.application"
 # DATABASE - AIVEN MYSQL
 # ============================================================
 
+
 # ============================================================
-# DATABASE - AIVEN MYSQL
+# DATABASE - LOCAL MYSQL AND AIVEN CLOUD
 # ============================================================
 
-DB_NAME = os.environ.get("DB_NAME", "defaultdb")
-DB_USER = os.environ.get("DB_USER", "avnadmin")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
-DB_HOST = os.environ.get("DB_HOST", "")
-DB_PORT = os.environ.get("DB_PORT", "15219")
-
-IS_VERCEL = bool(os.environ.get("VERCEL"))
+IS_VERCEL = os.environ.get("VERCEL", "").lower() in {
+    "1", "true", "yes"
+}
 
 CA_CERTIFICATE = BASE_DIR / "certificates" / "ca.pem"
 
-if IS_VERCEL and not all([
-    DB_NAME,
-    DB_USER,
-    DB_PASSWORD,
-    DB_HOST,
-]):
-    raise RuntimeError(
-        "Missing database environment variables. Configure "
-        "DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, and DB_PORT "
-        "in Vercel."
-    )
+if IS_VERCEL:
 
-if not CA_CERTIFICATE.exists():
-    raise RuntimeError(
-        f"MySQL CA certificate not found: {CA_CERTIFICATE}"
-    )
+    # AIVEN MYSQL - PRODUCTION
+    DB_NAME = os.environ.get("DB_NAME", "")
+    DB_USER = os.environ.get("DB_USER", "")
+    DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+    DB_HOST = os.environ.get("DB_HOST", "")
+    DB_PORT = os.environ.get("DB_PORT", "15219")
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": DB_NAME,
-        "USER": DB_USER,
-        "PASSWORD": DB_PASSWORD,
-        "HOST": DB_HOST or "localhost",
-        "PORT": DB_PORT,
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "ssl": {
-                "ca": str(CA_CERTIFICATE),
+    if not all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
+        raise RuntimeError(
+            "Missing Aiven database environment variables. "
+            "Configure DB_NAME, DB_USER, DB_PASSWORD and DB_HOST "
+            "on Vercel."
+        )
+
+    if not CA_CERTIFICATE.exists():
+        raise RuntimeError(
+            f"Aiven CA certificate not found: {CA_CERTIFICATE}"
+        )
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": DB_NAME,
+            "USER": DB_USER,
+            "PASSWORD": DB_PASSWORD,
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
+            "OPTIONS": {
+                "charset": "utf8mb4",
+                "ssl": {
+                    "ca": str(CA_CERTIFICATE),
+                },
             },
-        },
+        }
     }
-}
+
+else:
+
+    # LOCAL MYSQL - DEVELOPMENT
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ.get(
+                "LOCAL_DB_NAME", "stock_management"
+            ),
+            "USER": os.environ.get("LOCAL_DB_USER", "root"),
+            "PASSWORD": os.environ.get("LOCAL_DB_PASSWORD", "zain9246@"),
+            "HOST": "127.0.0.1",
+            "PORT": "3306",
+            "OPTIONS": {
+                "charset": "utf8mb4",
+            },
+        }
+    }
 
 
 # ============================================================

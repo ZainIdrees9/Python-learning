@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container-fluid mt-4 mx-auto" style="width: 95%;">
 
     <div class="mb-4">
 
-        <h2>
+        <h2 class="fs-3 fw-semibold">
             Return History
         </h2>
 
@@ -37,35 +37,13 @@
                     <thead class="table-light">
 
                         <tr>
-
-                            <th>
-                                Return #
-                            </th>
-
-                            <th>
-                                Invoice #
-                            </th>
-
-                            <th>
-                                Customer
-                            </th>
-
-                            <th>
-                                Return Date
-                            </th>
-
-                            <th class="text-center">
-                                Products
-                            </th>
-
-                            <th class="text-end">
-                                Refund
-                            </th>
-
-                            <th class="text-center">
-                                Action
-                            </th>
-
+                            <th>Return #</th>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Return Date</th>
+                            <th class="text-center">Products</th>
+                            <th class="text-end">Refund</th>
+                            <th class="text-center">Action</th>
                         </tr>
 
                     </thead>
@@ -78,62 +56,39 @@
                         <tr>
 
                             <td>
-
                                 <strong>
                                     #{{ return.ReturnId }}
                                 </strong>
-
                             </td>
 
-
                             <td>
-
                                 #{{ return.Sale.SaleId }}
-
                             </td>
 
-
                             <td>
-
                                 {{ return.Sale.Customer.Name }}
-
                             </td>
-
 
                             <td>
-
                                 {{ return.ReturnDate|date:"d M Y, h:i A" }}
-
                             </td>
-
 
                             <td class="text-center">
-
                                 {{ return.details.count }}
-
                             </td>
-
 
                             <td class="text-end">
-
                                 {{ return.TotalAmount }}
-
                             </td>
 
-
                             <td class="text-center">
-
                                 <a
                                     href="{% url 'inventory:sale_return_detail' return.ReturnId %}"
                                     class="btn btn-sm btn-primary"
                                 >
-
                                     <i class="bi bi-eye"></i>
-
                                     View
-
                                 </a>
-
                             </td>
 
                         </tr>
@@ -141,16 +96,9 @@
                         {% empty %}
 
                         <tr>
-
-                            <td
-                                colspan="7"
-                                class="text-center text-muted py-4"
-                            >
-
+                            <td colspan="7" class="text-center text-muted py-4">
                                 No return records available.
-
                             </td>
-
                         </tr>
 
                         {% endfor %}
