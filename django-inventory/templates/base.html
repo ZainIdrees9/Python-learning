@@ -82,15 +82,53 @@
             font-weight: 600;
             padding: 8px 11px !important;
             border-radius: 6px;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease;
             white-space: nowrap;
         }
 
+        /* Normal hover and focus */
+
         .app-navbar .nav-link:hover,
-        .app-navbar .nav-link:focus,
-        .app-navbar .nav-link.show {
+        .app-navbar .nav-link:focus {
             color: #ffffff;
             background-color: #263765;
+        }
+
+        /* Prevent Bootstrap's open dropdown state from changing color */
+
+        .app-navbar .nav-link.show {
+            color: #e2e8f0;
+            background-color: transparent;
+        }
+
+        /* ACTIVE TOP NAVIGATION TAB */
+
+        .app-navbar .nav-link.active {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            border-radius: 6px;
+        }
+
+        .app-navbar .nav-link.active:hover,
+        .app-navbar .nav-link.active:focus {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+        }
+
+        /* Active dropdown parent ONLY when its page is active */
+
+        .app-navbar .dropdown.active > .dropdown-toggle {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
+        /* Open dropdown without an active page */
+
+        .app-navbar .dropdown:not(.active) > .dropdown-toggle.show {
+            background-color: transparent !important;
+            color: #e2e8f0 !important;
         }
 
         .app-navbar .dropdown-menu {
@@ -98,6 +136,7 @@
             padding: 7px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
+            background-color: #ffffff;
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
         }
 
@@ -106,6 +145,7 @@
             border-radius: 5px;
             color: #334155;
             font-size: 15px;
+            background-color: transparent;
         }
 
         .app-navbar .dropdown-item:hover,
@@ -114,11 +154,20 @@
             color: #1d4ed8;
         }
 
+        /* ACTIVE DROPDOWN MENU ITEM ONLY */
+
+        .app-navbar .dropdown-menu .dropdown-item.active {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
         .app-navbar .dropdown-divider {
             margin: 5px 0;
         }
 
         /* Desktop hamburger hidden by default */
+
         .mobile-menu-toggle {
             display: none;
             flex: 0 0 auto;
@@ -191,10 +240,13 @@
             background-color: #919ab3;
         }
 
-        .sidebar-link.active {
-            background-color: #ffffff;
-            color: #263765;
+        /* ACTIVE ADMIN SIDEBAR TAB */
+
+        .admin-sidebar .sidebar-link.active {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
             font-weight: 700;
+            border-radius: 6px;
         }
 
         /* =========================
@@ -351,14 +403,16 @@
             color: #1d4ed8;
         }
 
-        .mobile-nav-link.active {
-            background: #e8edff;
-            color: #25397c;
+        /* ACTIVE MOBILE NAVIGATION TAB */
+
+        .mobile-nav-drawer .mobile-nav-link.active {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
             font-weight: 700;
         }
 
-        .mobile-nav-link.active i {
-            color: #25397c;
+        .mobile-nav-drawer .mobile-nav-link.active i {
+            color: #ffffff !important;
         }
 
         .mobile-nav-divider {
@@ -438,7 +492,6 @@
                 gap: 8px;
             }
 
-            /* Hide desktop top links; show unified hamburger instead */
             .app-navbar .navbar-collapse {
                 display: none !important;
             }
@@ -453,7 +506,6 @@
                 max-width: calc(100% - 54px);
             }
 
-            /* Hide the separate Admin sidebar on smaller screens */
             .admin-sidebar {
                 display: none;
             }
@@ -529,7 +581,6 @@
             </a>
 
             {% if user.is_authenticated %}
-                <!-- Mobile hamburger opens the unified navigation drawer -->
                 <button
                     class="mobile-menu-toggle"
                     id="mobileMenuToggle"
@@ -542,7 +593,6 @@
                 </button>
             {% endif %}
 
-            <!-- Existing desktop top navigation -->
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto">
 
@@ -704,7 +754,6 @@
     {% if user.is_authenticated %}
         <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
 
-        <!-- One combined mobile menu for top navigation and sidebar links -->
         <aside
             class="mobile-nav-drawer"
             id="mobileNavDrawer"
@@ -956,20 +1005,96 @@
     <!-- Navigation and responsive drawer behavior -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const sidebarLinks = document.querySelectorAll(
-                ".admin-sidebar .sidebar-link"
-            );
+
+            /* =====================================
+               CURRENT PAGE PATH
+            ===================================== */
 
             const currentPath = window.location.pathname.replace(/\/+$/, "");
 
-            sidebarLinks.forEach(function (link) {
+            function getLinkPath(link) {
                 const linkUrl = new URL(link.href, window.location.origin);
-                const linkPath = linkUrl.pathname.replace(/\/+$/, "");
+                return linkUrl.pathname.replace(/\/+$/, "");
+            }
 
-                if (linkPath === currentPath) {
+            /* =====================================
+               TOP NAVIGATION ACTIVE TAB
+            ===================================== */
+
+            document.querySelectorAll(
+                ".app-navbar .navbar-nav > .nav-item > a.nav-link:not(.dropdown-toggle)"
+            ).forEach(function (link) {
+
+                const linkPath = getLinkPath(link);
+
+                if (linkPath && linkPath === currentPath) {
                     link.classList.add("active");
                 }
             });
+
+            /* =====================================
+               TOP NAVIGATION DROPDOWN ACTIVE TAB
+            ===================================== */
+
+            document.querySelectorAll(
+                ".app-navbar .dropdown-menu .dropdown-item[href]"
+            ).forEach(function (link) {
+
+                const linkPath = getLinkPath(link);
+
+                if (linkPath && linkPath === currentPath) {
+
+                    link.classList.add("active");
+
+                    const parentDropdown = link.closest(".nav-item.dropdown");
+
+                    if (parentDropdown) {
+                        parentDropdown.classList.add("active");
+
+                        const dropdownToggle = parentDropdown.querySelector(
+                            ":scope > .dropdown-toggle"
+                        );
+
+                        if (dropdownToggle) {
+                            dropdownToggle.classList.add("active");
+                        }
+                    }
+                }
+            });
+
+            /* =====================================
+               ADMIN SIDEBAR ACTIVE TAB
+            ===================================== */
+
+            document.querySelectorAll(
+                ".admin-sidebar .sidebar-link"
+            ).forEach(function (link) {
+
+                const linkPath = getLinkPath(link);
+
+                if (linkPath && linkPath === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+
+            /* =====================================
+               MOBILE NAVIGATION ACTIVE TAB
+            ===================================== */
+
+            document.querySelectorAll(
+                ".mobile-nav-drawer .mobile-nav-link[href]"
+            ).forEach(function (link) {
+
+                const linkPath = getLinkPath(link);
+
+                if (linkPath && linkPath === currentPath) {
+                    link.classList.add("active");
+                }
+            });
+
+            /* =====================================
+               MOBILE DRAWER ELEMENTS
+            ===================================== */
 
             const menuToggle = document.getElementById("mobileMenuToggle");
             const menuDrawer = document.getElementById("mobileNavDrawer");
@@ -980,25 +1105,47 @@
                 return;
             }
 
+            /* =====================================
+               OPEN MOBILE MENU
+            ===================================== */
+
             function openMobileMenu() {
+
                 menuDrawer.classList.add("open");
                 menuBackdrop.classList.add("show");
+
                 menuDrawer.removeAttribute("inert");
                 menuDrawer.setAttribute("aria-hidden", "false");
+
                 menuToggle.setAttribute("aria-expanded", "true");
-                menuToggle.setAttribute("aria-label", "Close navigation menu");
+                menuToggle.setAttribute(
+                    "aria-label",
+                    "Close navigation menu"
+                );
+
                 document.body.classList.add("mobile-nav-open");
 
                 menuClose.focus();
             }
 
+            /* =====================================
+               CLOSE MOBILE MENU
+            ===================================== */
+
             function closeMobileMenu(returnFocus = false) {
+
                 menuDrawer.classList.remove("open");
                 menuBackdrop.classList.remove("show");
+
                 menuDrawer.setAttribute("inert", "");
                 menuDrawer.setAttribute("aria-hidden", "true");
+
                 menuToggle.setAttribute("aria-expanded", "false");
-                menuToggle.setAttribute("aria-label", "Open navigation menu");
+                menuToggle.setAttribute(
+                    "aria-label",
+                    "Open navigation menu"
+                );
+
                 document.body.classList.remove("mobile-nav-open");
 
                 if (returnFocus) {
@@ -1006,7 +1153,12 @@
                 }
             }
 
+            /* =====================================
+               MOBILE MENU EVENTS
+            ===================================== */
+
             menuToggle.addEventListener("click", function () {
+
                 if (menuDrawer.classList.contains("open")) {
                     closeMobileMenu();
                 } else {
@@ -1023,36 +1175,40 @@
             });
 
             menuDrawer.querySelectorAll("a").forEach(function (link) {
+
                 link.addEventListener("click", function () {
                     closeMobileMenu();
                 });
+
             });
 
+            /* =====================================
+               ESCAPE KEY
+            ===================================== */
+
             document.addEventListener("keydown", function (event) {
+
                 if (
                     event.key === "Escape" &&
                     menuDrawer.classList.contains("open")
                 ) {
                     closeMobileMenu(true);
                 }
+
             });
 
-            /* Highlight the current page in the mobile drawer */
-            menuDrawer.querySelectorAll(".mobile-nav-link").forEach(function (link) {
-                const linkUrl = new URL(link.href, window.location.origin);
-                const linkPath = linkUrl.pathname.replace(/\/+$/, "");
+            /* =====================================
+               RESPONSIVE DRAWER
+            ===================================== */
 
-                if (linkPath === currentPath) {
-                    link.classList.add("active");
-                }
-            });
-
-            /* If the screen grows to desktop size, close the mobile drawer */
             window.addEventListener("resize", function () {
+
                 if (window.innerWidth > 991.98) {
                     closeMobileMenu();
                 }
+
             });
+
         });
     </script>
 
